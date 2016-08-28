@@ -48,7 +48,6 @@ ESP8266 wifi(espSerial);
 // end region
 
 void setup() {
-
   if (serialDebugMode) {
     Serial.begin(serialBaud);
 
