@@ -21,6 +21,15 @@ class MapDownloader:
     MAP_TYPE = "hybrid"
     MARKER_TEMPLATE = "markers=color:red%7Clabel:R%7C"
 
+    """
+    initialises the MapDownloader taking in a location, which should be a comma separated
+    "lat, long" string, and a filename.
+
+    Example use:
+
+     ` MapDownloader("-41.2880647,174.7617035", "example") `
+
+    """
     def __init__(self, location, filename):
         # initialize the location and center of map, setting a mark at the location
         self.location = location
@@ -37,11 +46,13 @@ class MapDownloader:
         self.api_key = os.environ[self.API_ID]
 
     def download_map(self):
+        print("hello")
         # construct the request url
-        request = self.API_ROOT + self.center + self.API_SEPARATOR + self.ZOOM + \
-                  self.API_SEPARATOR + self.SIZE + self.API_SEPARATOR + \
-                  self.MAP_TYPE + self.API_SEPARATOR + self.marker + \
-                  self.API_SEPARATOR + self.api_key
+        request = self.API_ROOT + self.center + "&" + self.ZOOM + \
+                  "&" + self.SIZE + "&" + self.MAP_TYPE + \
+                  "&" + self.marker + "&" + self.api_key
+
+        print(request)
 
         # get the map from Google API
         response = self.session.get(request)
