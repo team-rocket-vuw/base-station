@@ -17,10 +17,10 @@
 
 /* Define available CmdMessenger commands */
 enum {
-    current_status,
-    status_is,
-    think_for_me,
-    thought_is,
+    current_location,
+    current_location_is,
+    send_rocket_command,
+    rocket_command_response,
     error,
 };
 
@@ -31,19 +31,21 @@ CmdMessenger c = CmdMessenger(Serial);
 /* Create callback functions to deal with incoming messages */
 
 /* callback */
-void on_current_status(void){
-    c.sendCmd(status_is,"Developing");
+void on_current_location(void){
+    c.sendCmd(current_location_is, "Developing");
 }
 
 /* callback */
-void on_think_for_me(void){
+void on_send_rocket_command(void){
 
     /* Grab two integers */
-    int value1 = c.readBinArg<int>();
-    int value2 = c.readBinArg<int>();
+    int command = c.readBinArg<int>();
+    int options = c.readBinArg<int>();
+
+    // Do command logic
 
     /* Send result back */
-    c.sendBinCmd(thought_is,value1 * value2);
+    c.sendBinCmd(rocket_command_response, "Command response message");
 
 }
 
@@ -54,8 +56,8 @@ void on_unknown_command(void){
 
 /* Attach callbacks for CmdMessenger commands */
 void attach_callbacks(void) {
-    c.attach(current_status,on_current_status);
-    c.attach(think_for_me,on_think_for_me);
+    c.attach(current_location, on_current_location);
+    c.attach(send_rocket_command, on_send_rocket_command);
     c.attach(on_unknown_command);
 }
 
