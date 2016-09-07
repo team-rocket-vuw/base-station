@@ -53,6 +53,3 @@ class MapDownloader:
         # finally close the file
         f.close()
 
-
-downloader = MapDownloader("-41.2880647,174.7617035", "test")
-downloader.download_map()
