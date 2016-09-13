@@ -93,10 +93,11 @@ ENV/
 
 # OSX files
 .DS_Store
+<<<<<<< HEAD
 
 # vim temp files
 *.swp
 *.swo
 
-# map downloader output
-**/example.png
+# Map Downloader image
+software/*.png
