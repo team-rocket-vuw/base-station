@@ -94,3 +94,6 @@ ENV/
 .DS_Store
 .swp
 .swo
+
+# Map Downloader image
+software/*.png
