@@ -11,6 +11,12 @@ A base station to run a rocket, and display some pretty graphs
   * https://github.com/thijse/Arduino-CmdMessenger - CmdMessenger Library
 * Build and upload
 
+### Hardware schematics
+All schematics and PCB design conducted in KiCad. For parts, libraries used can be found here:
+* Teensy library: https://github.com/XenGi/kicad_teensy
+* ESP8266-01 library: https://github.com/jdunmire/kicad-ESP8266
+* RFM22b library (Other useful libraries can be found here also): https://github.com/davepeake/kicad_libraries
+
 ### Softare code
 
 Each individual component requires a few minor setup steps:
