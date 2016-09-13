@@ -125,20 +125,25 @@ class MapTab:
         Concurrent helper method which uses the MapDownloader class to download the Google Map for the rockets location.
         """
         # TODO actually get values from base station
-        lat = -41.2880647 + (random.random() / 100)
-        long = 174.7617035 + (random.random() / 100)
+        current_lat = -41.2880647 + (random.random() / 100)
+        current_long = 174.7617035 + (random.random() / 100)
+
+        target_lat = -41.2880647 + (random.random() / 100)
+        target_long = 174.7617035 + (random.random() / 100)
 
         # construct a lat,long string to pass to the map downloader
-        lat_long_string = str(lat) + "," + str(long)
+        current_lat_long_string = str(current_lat) + "," + str(current_long)
+        target_lat_long_string = str(target_lat) + "," + str(target_long)
 
         # Create the MapDownloader and download the map, saving the resulting map image to {FILE_NAME}
-        downloader = map_downloader.MapDownloader(lat_long_string, self.FILE_NAME)
+        downloader = map_downloader.MapDownloader(target_lat_long_string, current_lat_long_string, self.FILE_NAME)
         downloader.download_map()
 
         # Set the new image to be the tab's map image
         new_map_image = QPixmap(self.FILE_NAME)
         self.map_label.setPixmap(new_map_image)
 
+        # TODO add current lat and long labels
         # set the tab's labels
-        self.set_label_text(lat=str(lat), long=str(long), time=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+        self.set_label_text(lat=str(target_lat), long=str(target_long), time=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 

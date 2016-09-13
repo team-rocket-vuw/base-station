@@ -91,9 +91,13 @@ ENV/
 # Pycharm
 .idea/
 
+# OSX files
 .DS_Store
-.swp
-.swo
+<<<<<<< HEAD
+
+# vim temp files
+*.swp
+*.swo
 
 # Map Downloader image
 software/*.png
