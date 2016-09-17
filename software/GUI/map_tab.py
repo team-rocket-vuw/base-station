@@ -1,6 +1,5 @@
 import os
 import datetime
-import random
 from threading import Thread
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap
@@ -11,6 +10,7 @@ from PyQt5.QtWidgets import QVBoxLayout
 
 from util import map_downloader
 from util import coordinate_helper
+from util import qr_code_generator
 
 
 class MapTab:
@@ -27,6 +27,7 @@ class MapTab:
 
     DEFAULT_FILE_NAME = "default_map.png"
     FILE_NAME = "rocket_location.png"
+    QR_CODE_FILE_NAME = "location-qr.png"
     TARGET_LAT_LABEL = "Rocket's Latitude: "
     TARGET_LONG_LABEL = "Rocket's Longitude: "
     CURRENT_LAT_LABEL = "Current Latitude: "
@@ -50,14 +51,16 @@ class MapTab:
         self.compass_bearing_label = QLabel(window)
         self.time_updated_label = QLabel(window)
         self.map_label = QLabel(window)
+        self.qr_code_label = QLabel(window)
 
         # initialise the fetch button
         self.fetch_map_button = QPushButton(self.FETCH_LABEL, window)
         self.initialise_fetch_button()
 
-        # sets the label text and map image
+        # sets the label text and map image and qr code image
         self.set_label_text()
         self.set_map_image()
+        self.set_qr_code_image()
 
         # finally set the tab layout
         self.set_layout(window)
@@ -95,6 +98,14 @@ class MapTab:
 
         self.map_label.setPixmap(map_image)
 
+    def set_qr_code_image(self):
+        """
+        Checks t see if the qr code image exists, and if it does, sets the qr code image label to that.
+        """
+        if os.path.isfile(self.QR_CODE_FILE_NAME):
+            qr_code_image = QPixmap(self.QR_CODE_FILE_NAME)
+            self.qr_code_label.setPixmap(qr_code_image)
+
     def set_layout(self, window):
         """
         Sets the layout of the tab using a horizontal and vertical layout box
@@ -110,6 +121,7 @@ class MapTab:
         vertical_layout.addWidget(self.distance_to_rocket_label, alignment=Qt.AlignTop)
         vertical_layout.addWidget(self.compass_bearing_label, alignment=Qt.AlignTop)
         vertical_layout.addWidget(self.time_updated_label, alignment=Qt.AlignTop)
+        vertical_layout.addWidget(self.qr_code_label, alignment=Qt.AlignTop)
 
         # Add a stretch at the bottom of the vertical box to push widgets to the top
         vertical_layout.addStretch(1)
@@ -149,10 +161,16 @@ class MapTab:
         downloader = map_downloader.MapDownloader(target_coordinate, current_coordinate, self.FILE_NAME)
         downloader.download_map()
 
+        qr_code_generator.QRCodeGenerator(current_coordinate, target_coordinate, self.QR_CODE_FILE_NAME).generate_image()
+
         # Set the new image to be the tab's map image
         new_map_image = QPixmap(self.FILE_NAME)
         self.map_label.setPixmap(new_map_image)
 
+        # Sets the QR code image if it exists
+        self.set_qr_code_image()
+
+        # Calculate the distance and bearing labels
         distance_label = str(coordinate_helper.distance_between_coordinates(current_coordinate, target_coordinate)) + "m"
         compass_bearing = round(coordinate_helper.bearing_between_coordinates(current_coordinate, target_coordinate), 1)
         compass_bearing_label = str(compass_bearing) + "°"
@@ -162,4 +180,3 @@ class MapTab:
                             target_lat=str(target_coordinate[0]), target_long=str(target_coordinate[1]),
                             distance_label=distance_label, compass_bearing_label=compass_bearing_label,
                             time=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-
