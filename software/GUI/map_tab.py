@@ -10,6 +10,7 @@ from PyQt5.QtWidgets import QPushButton
 from PyQt5.QtWidgets import QVBoxLayout
 
 from util import map_downloader
+from util import coordinate_helper
 
 
 class MapTab:
@@ -30,6 +31,7 @@ class MapTab:
     TARGET_LONG_LABEL = "Rocket's Longitude: "
     CURRENT_LAT_LABEL = "Current Latitude: "
     CURRENT_LONG_LABEL = "Current Longitude: "
+    DISTANCE_TO_ROCKET_LABEL = "Distance To Rocket: "
     TIME_LABEL = "Time Updated: "
     FETCH_LABEL = "Fetch Rocket Location"
     FETCH_BUTTON_WIDTH = 250
@@ -43,6 +45,7 @@ class MapTab:
         self.current_long_label = QLabel(window)
         self.target_lat_label = QLabel(window)
         self.target_long_label = QLabel(window)
+        self.distance_to_rocket_label = QLabel(window)
         self.time_updated_label = QLabel(window)
         self.map_label = QLabel(window)
 
@@ -64,7 +67,8 @@ class MapTab:
         self.fetch_map_button.setFixedWidth(self.FETCH_BUTTON_WIDTH)
         self.fetch_map_button.clicked.connect(lambda: self.fetch_map_button_pressed())
 
-    def set_label_text(self, target_lat="...", target_long="...", current_lat="...", current_long="...", time="..."):
+    def set_label_text(self, target_lat="...", target_long="...", current_lat="...", current_long="...",
+                       distance_label="...", time="..."):
         """
         Sets the labels of the tab, either taking in values or setting them to the default
         """
@@ -72,6 +76,7 @@ class MapTab:
         self.current_long_label.setText(self.CURRENT_LONG_LABEL + current_long)
         self.target_lat_label.setText(self.TARGET_LAT_LABEL + target_lat)
         self.target_long_label.setText(self.TARGET_LONG_LABEL + target_long)
+        self.distance_to_rocket_label.setText(self.DISTANCE_TO_ROCKET_LABEL + distance_label)
         self.time_updated_label.setText(self.TIME_LABEL + time)
         self.fetch_map_button.setText(self.FETCH_LABEL)
 
@@ -99,6 +104,7 @@ class MapTab:
         vertical_layout.addWidget(self.current_long_label, alignment=Qt.AlignTop)
         vertical_layout.addWidget(self.target_lat_label, alignment=Qt.AlignTop)
         vertical_layout.addWidget(self.target_long_label, alignment=Qt.AlignTop)
+        vertical_layout.addWidget(self.distance_to_rocket_label, alignment=Qt.AlignTop)
         vertical_layout.addWidget(self.time_updated_label, alignment=Qt.AlignTop)
 
         # Add a stretch at the bottom of the vertical box to push widgets to the top
@@ -132,27 +138,22 @@ class MapTab:
         """
         Concurrent helper method which uses the MapDownloader class to download the Google Map for the rockets location.
         """
-        # TODO actually get values from base station
-        current_lat = -41.2880647 + (random.random() / 100)
-        current_long = 174.7617035 + (random.random() / 100)
-
-        target_lat = -41.2880647 + (random.random() / 100)
-        target_long = 174.7617035 + (random.random() / 100)
-
-        # construct a lat,long string to pass to the map downloader
-        current_lat_long = (current_lat, current_long)
-        target_lat_long = (target_lat, target_long)
+        current_coordinate = coordinate_helper.random_coordinate()
+        target_coordinate = coordinate_helper.random_coordinate()
 
         # Create the MapDownloader and download the map, saving the resulting map image to {FILE_NAME}
-        downloader = map_downloader.MapDownloader(target_lat_long, current_lat_long, self.FILE_NAME)
+        downloader = map_downloader.MapDownloader(target_coordinate, current_coordinate, self.FILE_NAME)
         downloader.download_map()
 
         # Set the new image to be the tab's map image
         new_map_image = QPixmap(self.FILE_NAME)
         self.map_label.setPixmap(new_map_image)
 
+        distance_label = str(coordinate_helper.distance_between_coordinates(current_coordinate, target_coordinate)) + "m"
+
         # set the tab's labels
-        self.set_label_text(target_lat=str(target_lat), target_long=str(target_long),
-                            current_lat=str(current_lat), current_long=str(current_long),
+        self.set_label_text(current_lat=str(current_coordinate[0]), current_long=str(current_coordinate[1]),
+                            target_lat=str(target_coordinate[0]), target_long=str(target_coordinate[1]),
+                            distance_label=distance_label,
                             time=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
