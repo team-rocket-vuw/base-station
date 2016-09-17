@@ -32,6 +32,7 @@ class MapTab:
     CURRENT_LAT_LABEL = "Current Latitude: "
     CURRENT_LONG_LABEL = "Current Longitude: "
     DISTANCE_TO_ROCKET_LABEL = "Distance To Rocket: "
+    COMPASS_BEARING_LABEL = "Compass Bearing: "
     TIME_LABEL = "Time Updated: "
     FETCH_LABEL = "Fetch Rocket Location"
     FETCH_BUTTON_WIDTH = 250
@@ -46,6 +47,7 @@ class MapTab:
         self.target_lat_label = QLabel(window)
         self.target_long_label = QLabel(window)
         self.distance_to_rocket_label = QLabel(window)
+        self.compass_bearing_label = QLabel(window)
         self.time_updated_label = QLabel(window)
         self.map_label = QLabel(window)
 
@@ -68,7 +70,7 @@ class MapTab:
         self.fetch_map_button.clicked.connect(lambda: self.fetch_map_button_pressed())
 
     def set_label_text(self, target_lat="...", target_long="...", current_lat="...", current_long="...",
-                       distance_label="...", time="..."):
+                       distance_label="...", compass_bearing_label="...", time="..."):
         """
         Sets the labels of the tab, either taking in values or setting them to the default
         """
@@ -77,6 +79,7 @@ class MapTab:
         self.target_lat_label.setText(self.TARGET_LAT_LABEL + target_lat)
         self.target_long_label.setText(self.TARGET_LONG_LABEL + target_long)
         self.distance_to_rocket_label.setText(self.DISTANCE_TO_ROCKET_LABEL + distance_label)
+        self.compass_bearing_label.setText(self.COMPASS_BEARING_LABEL + compass_bearing_label)
         self.time_updated_label.setText(self.TIME_LABEL + time)
         self.fetch_map_button.setText(self.FETCH_LABEL)
 
@@ -105,6 +108,7 @@ class MapTab:
         vertical_layout.addWidget(self.target_lat_label, alignment=Qt.AlignTop)
         vertical_layout.addWidget(self.target_long_label, alignment=Qt.AlignTop)
         vertical_layout.addWidget(self.distance_to_rocket_label, alignment=Qt.AlignTop)
+        vertical_layout.addWidget(self.compass_bearing_label, alignment=Qt.AlignTop)
         vertical_layout.addWidget(self.time_updated_label, alignment=Qt.AlignTop)
 
         # Add a stretch at the bottom of the vertical box to push widgets to the top
@@ -150,10 +154,12 @@ class MapTab:
         self.map_label.setPixmap(new_map_image)
 
         distance_label = str(coordinate_helper.distance_between_coordinates(current_coordinate, target_coordinate)) + "m"
+        compass_bearing = round(coordinate_helper.bearing_between_coordinates(current_coordinate, target_coordinate), 1)
+        compass_bearing_label = str(compass_bearing) + "°"
 
         # set the tab's labels
         self.set_label_text(current_lat=str(current_coordinate[0]), current_long=str(current_coordinate[1]),
                             target_lat=str(target_coordinate[0]), target_long=str(target_coordinate[1]),
-                            distance_label=distance_label,
+                            distance_label=distance_label, compass_bearing_label=compass_bearing_label,
                             time=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
