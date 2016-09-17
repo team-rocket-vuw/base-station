@@ -23,6 +23,7 @@ class MapDownloader:
     MAP_TYPE = "maptype=hybrid"
     TARGET_MARKER = "markers=color:red%7Clabel:R%7C"
     CURRENT_MARKER = "markers=color:green%7Clabel:C%7C"
+    PATH = "path="
 
     def __init__(self, target_location, current_location, filename):
         """
@@ -38,6 +39,7 @@ class MapDownloader:
         self.current_location = current_location
         self.markers = self.TARGET_MARKER + self.parse_location(target_location) + "&" \
                        + self.CURRENT_MARKER + self.parse_location(current_location)
+        self.path = self.PATH + self.parse_location(target_location) + "|" + self.parse_location(current_location)
 
         # filename to save the resulting image map to
         self.filename = filename
@@ -59,7 +61,7 @@ class MapDownloader:
         # construct the request url
         request = self.API_ROOT + self.ZOOM + "&" + self.SIZE + \
                     "&" + self.MAP_TYPE + "&" + self.markers + \
-                    "&" + self.api_key
+                    "&" + self.path + "&" + self.api_key
 
         # get the map from Google API
         response = self.session.get(request)
