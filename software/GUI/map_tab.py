@@ -132,11 +132,11 @@ class MapTab:
         target_long = 174.7617035 + (random.random() / 100)
 
         # construct a lat,long string to pass to the map downloader
-        current_lat_long_string = str(current_lat) + "," + str(current_long)
-        target_lat_long_string = str(target_lat) + "," + str(target_long)
+        current_lat_long = (current_lat, current_long)
+        target_lat_long = (target_lat, target_long)
 
         # Create the MapDownloader and download the map, saving the resulting map image to {FILE_NAME}
-        downloader = map_downloader.MapDownloader(target_lat_long_string, current_lat_long_string, self.FILE_NAME)
+        downloader = map_downloader.MapDownloader(target_lat_long, current_lat_long, self.FILE_NAME)
         downloader.download_map()
 
         # Set the new image to be the tab's map image
