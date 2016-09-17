@@ -26,8 +26,10 @@ class MapTab:
 
     DEFAULT_FILE_NAME = "default_map.png"
     FILE_NAME = "rocket_location.png"
-    LAT_LABEL = "Latitude: "
-    LONG_LABEL = "Longitude: "
+    TARGET_LAT_LABEL = "Rocket's Latitude: "
+    TARGET_LONG_LABEL = "Rocket's Longitude: "
+    CURRENT_LAT_LABEL = "Current Latitude: "
+    CURRENT_LONG_LABEL = "Current Longitude: "
     TIME_LABEL = "Time Updated: "
     FETCH_LABEL = "Fetch Rocket Location"
     FETCH_BUTTON_WIDTH = 250
@@ -37,8 +39,10 @@ class MapTab:
         self.horizontal_layout = QHBoxLayout()
 
         # initialise the tab's labels
-        self.lat_label = QLabel(window)
-        self.long_label = QLabel(window)
+        self.current_lat_label = QLabel(window)
+        self.current_long_label = QLabel(window)
+        self.target_lat_label = QLabel(window)
+        self.target_long_label = QLabel(window)
         self.time_updated_label = QLabel(window)
         self.map_label = QLabel(window)
 
@@ -60,12 +64,14 @@ class MapTab:
         self.fetch_map_button.setFixedWidth(self.FETCH_BUTTON_WIDTH)
         self.fetch_map_button.clicked.connect(lambda: self.fetch_map_button_pressed())
 
-    def set_label_text(self, lat="...", long="...", time="..."):
+    def set_label_text(self, target_lat="...", target_long="...", current_lat="...", current_long="...", time="..."):
         """
-        Sets the labels of the tab, either taking in values or settting them to the default
+        Sets the labels of the tab, either taking in values or setting them to the default
         """
-        self.lat_label.setText(self.LAT_LABEL + lat)
-        self.long_label.setText(self.LONG_LABEL + long)
+        self.current_lat_label.setText(self.CURRENT_LAT_LABEL + current_lat)
+        self.current_long_label.setText(self.CURRENT_LONG_LABEL + current_long)
+        self.target_lat_label.setText(self.TARGET_LAT_LABEL + target_lat)
+        self.target_long_label.setText(self.TARGET_LONG_LABEL + target_long)
         self.time_updated_label.setText(self.TIME_LABEL + time)
         self.fetch_map_button.setText(self.FETCH_LABEL)
 
@@ -89,8 +95,10 @@ class MapTab:
 
         # Add the display & control widgets to the vertical layout
         vertical_layout.addWidget(self.fetch_map_button, alignment=Qt.AlignTop)
-        vertical_layout.addWidget(self.lat_label, alignment=Qt.AlignTop)
-        vertical_layout.addWidget(self.long_label, alignment=Qt.AlignTop)
+        vertical_layout.addWidget(self.current_lat_label, alignment=Qt.AlignTop)
+        vertical_layout.addWidget(self.current_long_label, alignment=Qt.AlignTop)
+        vertical_layout.addWidget(self.target_lat_label, alignment=Qt.AlignTop)
+        vertical_layout.addWidget(self.target_long_label, alignment=Qt.AlignTop)
         vertical_layout.addWidget(self.time_updated_label, alignment=Qt.AlignTop)
 
         # Add a stretch at the bottom of the vertical box to push widgets to the top
@@ -143,7 +151,8 @@ class MapTab:
         new_map_image = QPixmap(self.FILE_NAME)
         self.map_label.setPixmap(new_map_image)
 
-        # TODO add current lat and long labels
         # set the tab's labels
-        self.set_label_text(lat=str(target_lat), long=str(target_long), time=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+        self.set_label_text(target_lat=str(target_lat), target_long=str(target_long),
+                            current_lat=str(current_lat), current_long=str(current_long),
+                            time=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
