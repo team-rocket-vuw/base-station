@@ -100,7 +100,7 @@ class MapTab:
 
     def set_qr_code_image(self):
         """
-        Checks t see if the qr code image exists, and if it does, sets the qr code image label to that.
+        Checks to see if the qr code image exists, and if it does, sets the qr code image label to that.
         """
         if os.path.isfile(self.QR_CODE_FILE_NAME):
             qr_code_image = QPixmap(self.QR_CODE_FILE_NAME)
