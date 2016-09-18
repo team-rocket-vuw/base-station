@@ -4,8 +4,8 @@ import os
 
 class MapDownloader:
     """
-    Helper class to download a small hybrid Google map, with a marker
-    at at a specified lat-long coordinate. The file is then saved to a
+    Helper class to download a small hybrid Google map, with markers
+    at the specified lat-long coordinates. The file is then saved to a
     specified {filename}
 
     Created 07 September 2016
@@ -23,20 +23,23 @@ class MapDownloader:
     MAP_TYPE = "maptype=hybrid"
     TARGET_MARKER = "markers=color:red%7Clabel:R%7C"
     CURRENT_MARKER = "markers=color:green%7Clabel:C%7C"
+    PATH = "path="
 
     def __init__(self, target_location, current_location, filename):
         """
-        Initialises the MapDownloader taking in a location, which should be a comma separated
-        "lat, long" string, and a filename.
+        Initialises the MapDownloader taking in a target and current location, which should be a
+        (lat, long) tuple, and a filename.
 
         Example use:
 
-        ` MapDownloader("-41.2880647,174.7617035", "-41.288712, 174.761792", "example") `
+        ` MapDownloader((-41.2880647, 174.7617035), (-41.288712, 174.761792), "example") `
         """
         # initialize the target_location and current_location, setting a mark at the both locations
         self.target_location = target_location
         self.current_location = current_location
-        self.markers = self.TARGET_MARKER + target_location + "&" + self.CURRENT_MARKER + current_location
+        self.markers = self.TARGET_MARKER + self.parse_location(target_location) + "&" \
+                       + self.CURRENT_MARKER + self.parse_location(current_location)
+        self.path = self.PATH + self.parse_location(target_location) + "|" + self.parse_location(current_location)
 
         # filename to save the resulting image map to
         self.filename = filename
@@ -47,6 +50,9 @@ class MapDownloader:
         # read the api key from the os' exports
         self.api_key = os.environ[self.API_ID]
 
+    def parse_location(self, location_tuple):
+        return str(location_tuple[0]) + "," + str(location_tuple[1])
+
     def download_map(self):
         """
         Constructs the map download url and then uses the session to download the image data, saving
@@ -55,7 +61,7 @@ class MapDownloader:
         # construct the request url
         request = self.API_ROOT + self.ZOOM + "&" + self.SIZE + \
                     "&" + self.MAP_TYPE + "&" + self.markers + \
-                    "&" + self.api_key
+                    "&" + self.path + "&" + self.api_key
 
         # get the map from Google API
         response = self.session.get(request)
