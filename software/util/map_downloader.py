@@ -11,7 +11,7 @@ class MapDownloader:
     Created 07 September 2016
     By Marcel van Workum
 
-    Modified 13 September 2016
+    Modified 24 September 2016
     By Marcel van Workum
     """
 
@@ -19,7 +19,6 @@ class MapDownloader:
     API_ID = "google_maps_api_key"
     API_SEPARATOR = "&"
     SIZE = "size=700x700"
-    ZOOM = "zoom=16"
     MAP_TYPE = "maptype=hybrid"
     TARGET_MARKER = "markers=color:red%7Clabel:R%7C"
     CURRENT_MARKER = "markers=color:green%7Clabel:C%7C"
@@ -59,7 +58,7 @@ class MapDownloader:
          it to the specified file
         """
         # construct the request url
-        request = self.API_ROOT + self.ZOOM + "&" + self.SIZE + \
+        request = self.API_ROOT + self.SIZE + \
                     "&" + self.MAP_TYPE + "&" + self.markers + \
                     "&" + self.path + "&" + self.api_key
 
