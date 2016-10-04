@@ -7,6 +7,7 @@ from PyQt5.QtWidgets import QHBoxLayout
 from PyQt5.QtWidgets import QLabel
 from PyQt5.QtWidgets import QPushButton
 from PyQt5.QtWidgets import QVBoxLayout
+from PyQt5.QtWidgets import QLineEdit
 
 from util import map_downloader
 from util import coordinate_helper
@@ -21,7 +22,7 @@ class MapTab:
     Created 13 September 2016
     By Marcel van Workum
 
-    Modified 13 September 2016
+    Modified 24 September 2016
     By Marcel van Workum
     """
 
@@ -52,6 +53,13 @@ class MapTab:
         self.time_updated_label = QLabel(window)
         self.map_label = QLabel(window)
         self.qr_code_label = QLabel(window)
+
+        self.current_input_label = QLabel(window)
+        self.current_input_label.setText("Current lat,long - comma separated")
+        self.current_input_edit = QLineEdit(window)
+        self.target_input_label = QLabel(window)
+        self.target_input_label.setText("Target lat,long - comma separated")
+        self.target_input_edit = QLineEdit(window)
 
         # initialise the fetch button
         self.fetch_map_button = QPushButton(self.FETCH_LABEL, window)
@@ -113,6 +121,10 @@ class MapTab:
         vertical_layout = QVBoxLayout()
 
         # Add the display & control widgets to the vertical layout
+        vertical_layout.addWidget(self.current_input_label, alignment=Qt.AlignTop)
+        vertical_layout.addWidget(self.current_input_edit, alignment=Qt.AlignTop)
+        vertical_layout.addWidget(self.target_input_label, alignment=Qt.AlignTop)
+        vertical_layout.addWidget(self.target_input_edit, alignment=Qt.AlignTop)
         vertical_layout.addWidget(self.fetch_map_button, alignment=Qt.AlignTop)
         vertical_layout.addWidget(self.current_lat_label, alignment=Qt.AlignTop)
         vertical_layout.addWidget(self.current_long_label, alignment=Qt.AlignTop)
@@ -154,14 +166,15 @@ class MapTab:
         """
         Concurrent helper method which uses the MapDownloader class to download the Google Map for the rockets location.
         """
-        current_coordinate = coordinate_helper.random_coordinate()
-        target_coordinate = coordinate_helper.random_coordinate()
+        # Get coordinates
+        current_coordinate = tuple(map(float, self.current_input_edit.text().split(",")))
+        target_coordinate = tuple(map(float, self.target_input_edit.text().split(",")))
 
         # Create the MapDownloader and download the map, saving the resulting map image to {FILE_NAME}
         downloader = map_downloader.MapDownloader(target_coordinate, current_coordinate, self.FILE_NAME)
         downloader.download_map()
 
-        qr_code_generator.QRCodeGenerator(current_coordinate, target_coordinate, self.QR_CODE_FILE_NAME).generate_image()
+        qr_code_generator.QRCodeGenerator(target_coordinate, self.QR_CODE_FILE_NAME).generate_image()
 
         # Set the new image to be the tab's map image
         new_map_image = QPixmap(self.FILE_NAME)

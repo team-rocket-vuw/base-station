@@ -1,5 +1,4 @@
 import pyqrcode
-import png
 
 
 class QRCodeGenerator:
@@ -10,7 +9,7 @@ class QRCodeGenerator:
     Created 17 September 2016
     By Marcel van Workum
 
-    Modified 19 September 2016
+    Modified 24 September 2016
     By Marcel van Workum
     """
     GOOGLE_MAP_ROOT = "http://maps.google.com/maps?q=loc:"
@@ -19,7 +18,7 @@ class QRCodeGenerator:
         """
         Instantiates the QRCodeGenerator and splits the location into a url friendly string
         """
-        self.location = str(location[0] + "," + location[1])
+        self.location = str(location[0]) + "," + str(location[1])
         self.file_name = file_name
 
     def generate_image(self):
