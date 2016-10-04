@@ -1,0 +1,20 @@
+{
+  "name": "teamrocket-basestation",
+  "homepage": "https://github.com/team-rocket-vuw/base-station",
+  "authors": [
+    "Recursively <Marcel.vanWorkum@gmail.com>"
+  ],
+  "description": "Web app to control and monitor Teamrocket's rocket on site.",
+  "main": "",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "react": "^15.1.0"
+  }
+}

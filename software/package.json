@@ -1,0 +1,22 @@
+{
+  "name": "teamrocket-basestation",
+  "version": "1.0.0",
+  "description": "Web app to control and monitor Teamrocket\\'s rocket on site.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/team-rocket-vuw/base-station.git"
+  },
+  "author": "Marcel van Workum",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/team-rocket-vuw/base-station/issues"
+  },
+  "homepage": "https://github.com/team-rocket-vuw/base-station#readme",
+  "devDependencies": {
+    "bower": "^1.7.9"
+  }
+}
