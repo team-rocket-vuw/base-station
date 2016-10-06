@@ -1,0 +1,30 @@
+@import "variables";
+@import "sidebar";
+@import "content";
+
+html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  font-family: sans-serif;
+
+  body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+
+    #react-hook {
+      min-height: 100vh;
+
+      .react-container {
+        min-height: 100vh;
+        display: flex;
+        flex: 1;
+      }
+    }
+  }
+}
