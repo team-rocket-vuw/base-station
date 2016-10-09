@@ -4,16 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Team Rocket Basestation</title>
-
-    <!-- styles -->
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/build/style.css') }}">
-
-    <!-- scripts -->
-    <script src="{{ url_for('static', filename='bower_components/react/react.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='bower_components/react/react-dom.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='bower_components/jquery/dist/jquery.min.js') }}"></script>
   </head>
   <body>
+    <script type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBUvFKl4YtRn_Aeisv7x58OGn4pCcT7U1Y">
+    </script>
     <div id="react-hook"></div>
     <script src="{{ url_for('static', filename='scripts/build/main.js') }}"></script>
   </body>
