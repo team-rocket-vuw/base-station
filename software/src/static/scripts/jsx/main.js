@@ -1,10 +1,4 @@
 var Sections = React.createClass({
-  getInitialState: function() {
-    return {
-      selectedSection: 'status'
-    };
-  },
-
   onSectionClick: function(e) {
     let sections = ["status", "controls", "location", "weather", "simulations"];
     e.preventDefault();
@@ -12,10 +6,6 @@ var Sections = React.createClass({
     var targetId = e.currentTarget.dataset.id;
 
     if (sections.includes(targetId)) {
-      this.setState({
-          selectedSection: targetId
-      });
-
       this.props.handleSectionChange(targetId);
     }
   },
@@ -23,11 +13,11 @@ var Sections = React.createClass({
   render: function() {
     return (
       <ul className="sections">
-        <li onClick={this.onSectionClick} data-id="status" className={this.state.selectedSection == "status" ? "selected" : " "}>Status</li>
-        <li onClick={this.onSectionClick} data-id="controls" className={this.state.selectedSection == "controls" ? "selected" : " "}>Controls</li>
-        <li onClick={this.onSectionClick} data-id="location" className={this.state.selectedSection == "location" ? "selected" : " "}>Location</li>
-        <li onClick={this.onSectionClick} data-id="weather" className={this.state.selectedSection == "weather" ? "selected" : " "}>Weather</li>
-        <li onClick={this.onSectionClick} data-id="simulations" className={this.state.selectedSection == "simulations" ? "selected" : " "}>Simulations</li>
+        <li onClick={this.onSectionClick} data-id="status" className={this.props.selectedSection == "status" ? "selected" : " "}>Status</li>
+        <li onClick={this.onSectionClick} data-id="controls" className={this.props.selectedSection == "controls" ? "selected" : " "}>Controls</li>
+        <li onClick={this.onSectionClick} data-id="location" className={this.props.selectedSection == "location" ? "selected" : " "}>Location</li>
+        <li onClick={this.onSectionClick} data-id="weather" className={this.props.selectedSection == "weather" ? "selected" : " "}>Weather</li>
+        <li onClick={this.onSectionClick} data-id="simulations" className={this.props.selectedSection == "simulations" ? "selected" : " "}>Simulations</li>
       </ul>
     );
   }
@@ -53,7 +43,7 @@ var SideBar = React.createClass({
     return (
       <div className="react-sidebar">
         <Header />
-        <Sections handleSectionChange={this.props.handleSectionChange}/>
+        <Sections selectedSection={this.props.selectedSection} handleSectionChange={this.props.handleSectionChange}/>
       </div>
     )
   }
@@ -64,6 +54,7 @@ var ContentContainer = React.createClass({
     return (
       <div className="react-content">
         <p>Currently selected section: {this.props.selectedSection}</p>
+        <p>{this.props.data.foo}</p>
       </div>
     );
   }
@@ -85,8 +76,8 @@ var TeamRocket = React.createClass({
   render: function() {
     return (
       <div className="react-container">
-        <SideBar handleSectionChange={this.handleSectionChange} />
-        <ContentContainer selectedSection={this.state.selectedSection}/>
+        <SideBar selectedSection={this.state.selectedSection} handleSectionChange={this.handleSectionChange} />
+        <ContentContainer data={this.props.data} selectedSection={this.state.selectedSection}/>
       </div>
     );
   }
