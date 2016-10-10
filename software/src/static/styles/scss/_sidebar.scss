@@ -1,0 +1,59 @@
+.react-sidebar {
+  /* 12em is the width of the columns */
+  flex: 0 0 15em;
+  /* put the nav on the left */
+  order: -1;
+  background-color: $dark-blue;
+  color: $cloud-white;
+
+  .header {
+    display: inline-block;
+    width: 100%;
+    margin: 0;
+    text-align: center;
+    margin-top: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid $cloud-white;
+
+    .icon {
+      display: inline-block;
+      float: left;
+    }
+
+    .title {
+      display: inline-block;
+      padding-top: 10px;
+
+      p {
+        margin: 0;
+        padding: 0;
+      }
+
+      .version {
+        margin-top: 20px;
+        font-weight: bolder;
+      }
+    }
+  }
+
+  .sections {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+
+    li {
+      border-bottom: 1px solid $cloud-white;
+      text-decoration: none;
+      height: 50px;
+
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      text-align: center;
+
+      &.selected {
+        background: linear-gradient(to right, #252830, #ECF0F1);
+      }
+    }
+  }
+}
