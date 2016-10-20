@@ -6,7 +6,7 @@ var ContentContainer = React.createClass({
   render: function() {
     return (
       <div className="react-content">
-        <Map />
+        <Map markers={this.props.data.markers} />
         <p>Currently selected section: {this.props.selectedSection}</p>
         <h2>{this.props.data.status}</h2>
 

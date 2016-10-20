@@ -18,8 +18,8 @@ def index():
 
 @app.route('/data')
 def data():
-    app.lat = app.lat + 0.0001
-    app.long = app.long + 0.0001
+    app.lat = app.lat + 0.0005
+    app.long = app.long + 0.0005
 
     downloader = map_url_generator.MapURLGenerator((app.lat, app.long), (-41.288712, 174.761792))
     api_url = downloader.generate_url()
@@ -33,15 +33,33 @@ def data():
         },
         'location': {
             'current': {
-                'lat': randint(0, 100),
-                'long': randint(0, 100)
+                'lat': -41.2880647,
+                'long': 174.7617035
             },
             'target': {
-                'lat': randint(0, 100),
-                'long': randint(0, 100)
+                'lat': app.lat,
+                'long': app.long
             },
             'request_url': api_url
-        }
+        },
+        'markers': [
+          {
+            'position': {
+                'lat': -41.2880647,
+                'lng': 174.7617035
+                },
+            'label': 'C',
+            'key': 'current',
+          },
+          {
+            'position': {
+                'lat': app.lat,
+                'lng': app.long
+                },
+            'label': 'R',
+            'key': 'target',
+          }
+        ],
     }
 
     return json.dumps(data)

@@ -1,6 +1,7 @@
 @import "variables";
 @import "sidebar";
 @import "content";
+@import "map";
 
 html {
   margin: 0;
@@ -29,7 +30,3 @@ html {
   }
 }
 
-.react-map {
-  width: 100%;
-  height: 300px;
-}
