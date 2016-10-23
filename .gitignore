@@ -88,16 +88,8 @@ ENV/
 # Rope project settings
 .ropeproject
 
-# Pycharm
-.idea/
-
-# OSX files
+# OSX ignores
 .DS_Store
-<<<<<<< HEAD
 
-# vim temp files
-*.swp
-*.swo
-
-# Map Downloader image
-software/*.png
+# IDEA
+.idea/
