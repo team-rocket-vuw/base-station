@@ -23,7 +23,7 @@ This installs all of the required dependencies to build and run the project.
 
 `TODO this step should be combined into one`
 
-In one terminal, run `npm run dev`: This will start the webpack service, which compiles the jsx and scss files, and continually runs a watcher in the background, that will recompile any changes in realtime.
+In one terminal, run `npm run dev`: This will start the webpack service, which compiles the jsx and scss files, and continually runs a watcher in the background that will recompile any changes in realtime.
 
 Alternately you can run `npm run build` to just build the jsx and scss files once.
 

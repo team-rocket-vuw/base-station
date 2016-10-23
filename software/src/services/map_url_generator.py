@@ -4,7 +4,7 @@ import os
 
 class MapURLGenerator:
     """
-    Helper class to generate the api url por a small hybrid Google map, with markers
+    Helper class to generate the api url for a small hybrid Google map, with markers
     at the specified lat-long coordinates.
 
     Created 09 October 2016
