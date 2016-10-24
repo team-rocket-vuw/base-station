@@ -3,6 +3,12 @@ import React from 'react';
 import Map from './map.jsx';
 
 var ContentContainer = React.createClass({
+  getInitialState: function() {
+    return({
+
+    })
+  },
+
   getStatusContent: function() {
     return(
       <div className="react-content">
@@ -17,33 +23,37 @@ var ContentContainer = React.createClass({
 
         <h3>Location</h3>
         <ul>
-          <li>Current</li>
-          <li>lat: {this.props.data.location.current.lat}</li>
-          <li>long: {this.props.data.location.current.long}</li>
-        </ul>
-
-        <ul>
           <li>Target</li>
           <li>lat: {this.props.data.location.target.lat}</li>
-          <li>long: {this.props.data.location.target.long}</li>
+          <li>long: {this.props.data.location.target.lng}</li>
         </ul>
       </div>
     );
   },
 
   getLocationContent: function() {
+    var currentLat;
+    var currentLng;
+
+    if (this.state.location) {
+      currentLat = this.state.location.current.lat
+      currentLng = this.state.location.current.lng
+    } else {
+      currentLat = "Not set"
+      currentLng = "Not set"
+    }
     return(
       <div className="react-content">
-        <Map markers={this.props.data.markers} />
+        <Map markers={this.props.data.markers} onCurrentLocationSet={this.onCurrentLocationSet} />
 
         <div className="location-data-container">
           <h2>Location Data</h2>
-          
+
           <div className="current-location">
             <h3>Current</h3>
             <ul className="location-data-list">
-              <li>lat: {this.props.data.location.current.lat}</li>
-              <li>long: {this.props.data.location.current.lng}</li>
+              <li>lat: {currentLat}</li>
+              <li>long: {currentLng}</li>
             </ul>
           </div>
 
@@ -57,6 +67,17 @@ var ContentContainer = React.createClass({
         </div>
       </div>
     );
+  },
+
+  onCurrentLocationSet: function(location) {
+    this.setState({
+      location: {
+        current: {
+          lat: location.lat,
+          lng: location.lng
+        }
+      }
+    });
   },
 
   render: function() {
