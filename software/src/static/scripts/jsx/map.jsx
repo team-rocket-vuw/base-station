@@ -5,13 +5,14 @@ import {
   Marker,
 } from "react-google-maps";
 
-const GettingStartedGoogleMap = withGoogleMap(props => (
+const GoogleMapComponent = withGoogleMap(props => (
   <GoogleMap
     ref={props.onMapLoad}
-    defaultZoom={13}
+    defaultZoom={12}
     defaultCenter={{ lat: props.markers[0].position.lat, lng:  props.markers[0].position.lng}}
     onClick={props.onMapClick}
   >
+
     {props.markers.map((marker, index) => (
       <Marker
         {...marker}
@@ -22,20 +23,47 @@ const GettingStartedGoogleMap = withGoogleMap(props => (
 ));
 
 var Map = React.createClass({
+  getInitialState: function() {
+    return({
+      currentMarkerSet: false
+    });
+  },
+
+  componentDidMount: function() {
+    navigator.geolocation.getCurrentPosition((position) => {
+      var lat = position.coords.latitude;
+      var lng = position.coords.longitude;
+
+      this.setState({
+        currentMarkerSet: true,
+        currentMarker: {
+          'position': {
+            lat: lat,
+            lng: lng
+          },
+          'label': 'C',
+          'key': 'current',
+        }
+      });
+    })
+  },
+
   render: function() {
+    var markers = this.props.markers;
+
+    if (this.state.currentMarkerSet) {
+      markers.push(this.state.currentMarker);
+    }
+
     return (
       <div className="react-map">
-        <GettingStartedGoogleMap
-          containerElement={
-            <div style={{ height: `100%`, width: `100%` }} />
-          }
-          mapElement={
-            <div style={{ height: `100%`, width: `100%` }} />
-          }
+        <GoogleMapComponent
+          containerElement={<div id="containerElement" style={{ height: `100%`, width: `100%` }} />}
+          mapElement={<div id="mapElement" style={{ height: `100%`, width: `100%` }} />}
           onMapLoad={_.noop}
           onMapClick={_.noop}
           onMarkerRightClick={_.noop}
-          markers={this.props.markers}
+          markers={markers}
         />
       </div>
     )

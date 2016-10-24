@@ -5,7 +5,7 @@ import os
 class MapURLGenerator:
     """
     Helper class to generate the api url for a small hybrid Google map, with markers
-    at the specified lat-long coordinates.
+    at the specified lat-lng coordinates.
 
     Created 09 October 2016
     By Marcel van Workum
@@ -26,7 +26,7 @@ class MapURLGenerator:
     def __init__(self, target_location, current_location):
         """
         Initialises the MapDownloader taking in a target and current location, which should be a
-        (lat, long) tuple.
+        (lat, lng) tuple.
 
         Example use:
 
