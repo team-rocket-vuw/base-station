@@ -8,7 +8,23 @@ from services import map_url_generator
 from datetime import datetime
 from random import randint
 
+import _thread
+import serial
+import time
+
 app = Flask(__name__)
+
+teensy = serial.Serial("/dev/cu.usbmodem1956731", 9600)
+
+def updateRocketLocation(thread_name, delay):
+    while True:
+        try:
+            data = teensy.readline()[:-2]
+            if data:
+                print(data)
+        except:
+            print("wot")
+
 
 DEBUG = True
 
@@ -58,6 +74,12 @@ def data():
 
 
 if __name__ == '__main__':
+    try:
+        _thread.start_new_thread(updateRocketLocation, ("SerialThread", 1))
+    except:
+        print("Failed to start Serial thread")
+        sys.exit()
+
     app.lat = -41.2880647
     app.lng = 174.7617035
     app.run(debug=DEBUG)

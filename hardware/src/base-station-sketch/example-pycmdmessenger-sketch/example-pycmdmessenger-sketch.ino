@@ -1,24 +1,13 @@
 /*
-  Example sketch utilising PyCmdMessenger Library
-
-  This sketch contains several basic use cases of the PyCmdMessenger
-  library.
-
-  TODO Requires full compatiability testing once hardware base station is complete.
-
-  Created 7 September 2016
-  By Marcel van Workum
-
-  Modified 7 September 2016
-  By Marcel van Workum
+  TODO Needs to be integrated with metis-2 code
 */
 
 #include "CmdMessenger.h"
 
 /* Define available CmdMessenger commands */
 enum {
-    current_location,
-    current_location_is,
+    rocket_location,
+    rocket_location_is,
     send_rocket_command,
     rocket_command_response,
     error,
@@ -31,8 +20,8 @@ CmdMessenger c = CmdMessenger(Serial);
 /* Create callback functions to deal with incoming messages */
 
 /* callback */
-void on_current_location(void){
-    c.sendCmd(current_location_is, "Developing");
+void on_rocket_location(void){
+    c.sendBinCmd(rocket_location_is, "51.412");
 }
 
 /* callback */
@@ -40,12 +29,9 @@ void on_send_rocket_command(void){
 
     /* Grab two integers */
     int command = c.readBinArg<int>();
-    int options = c.readBinArg<int>();
-
-    // Do command logic
 
     /* Send result back */
-    c.sendBinCmd(rocket_command_response, "Command response message");
+    c.sendBinCmd(rocket_command_response, command);
 
 }
 
@@ -56,7 +42,7 @@ void on_unknown_command(void){
 
 /* Attach callbacks for CmdMessenger commands */
 void attach_callbacks(void) {
-    c.attach(current_location, on_current_location);
+    c.attach(rocket_location, on_rocket_location);
     c.attach(send_rocket_command, on_send_rocket_command);
     c.attach(on_unknown_command);
 }
@@ -68,5 +54,4 @@ void setup() {
 
 void loop() {
     c.feedinSerialData();
-    delay(500);
 }
