@@ -6,7 +6,6 @@ var ContentContainer = React.createClass({
   getStatusContent: function() {
     return(
       <div className="react-content">
-        <p>Currently selected section: {this.props.selectedSection}</p>
         <h2>{this.props.data.status}</h2>
 
         <h3>Gyro data</h3>
@@ -36,7 +35,26 @@ var ContentContainer = React.createClass({
     return(
       <div className="react-content">
         <Map markers={this.props.data.markers} />
-        <p>Currently selected section: {this.props.selectedSection}</p>
+
+        <div className="location-data-container">
+          <h2>Location Data</h2>
+          
+          <div className="current-location">
+            <h3>Current</h3>
+            <ul className="location-data-list">
+              <li>lat: {this.props.data.location.current.lat}</li>
+              <li>long: {this.props.data.location.current.lng}</li>
+            </ul>
+          </div>
+
+          <div className="rocket-location">
+            <h3>Rocket</h3>
+            <ul className="location-data-list">
+              <li>lat: {this.props.data.location.target.lat}</li>
+              <li>long: {this.props.data.location.target.lng}</li>
+            </ul>
+          </div>
+        </div>
       </div>
     );
   },
