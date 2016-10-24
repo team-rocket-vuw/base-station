@@ -1,45 +1,47 @@
 #!/usr/local/bin/python3
 
-from flask import Flask, render_template
-import json
+#TODO modularise this file
 
+# Web framework imports
+from flask import Flask, render_template
+
+# helpers
 from services import map_url_generator
 
+# system imports
 from datetime import datetime
-from random import randint
-
-import _thread
-import serial
+import threading
+import json
 import time
 
-app = Flask(__name__)
+# CmdMessenger import
+import PyCmdMessenger
 
-teensy = serial.Serial("/dev/cu.usbmodem1956731", 9600)
+#TODO remove this. Here for testing only
+from random import randint
 
-def updateRocketLocation(thread_name, delay):
-    while True:
-        try:
-            data = teensy.readline()[:-2]
-            if data:
-                print(data)
-        except:
-            print("wot")
+SERIAL_PORT = "/dev/cu.usbmodem1411"
+BAUD_RATE = 9600
 
+ARDUINO_INTERFACE = PyCmdMessenger.ArduinoBoard(SERIAL_PORT, baud_rate = BAUD_RATE)
 
+MESSENGER_COMMANDS= [["rocket_location",""],
+                    ["rocket_location_is","s"],
+                    ["send_rocket_command","i"],
+                    ["rocket_command_response","s"],
+                    ["error","s"]]
+
+MESSENGER = PyCmdMessenger.CmdMessenger(ARDUINO_INTERFACE, MESSENGER_COMMANDS)
+
+APP = Flask(__name__)
 DEBUG = True
 
-@app.route('/')
+@APP.route('/')
 def index():
     return render_template('index.html')
 
-@app.route('/data')
+@APP.route('/data')
 def data():
-    app.lat = app.lat + 0.0005
-    app.lng = app.lng + 0.0005
-
-    downloader = map_url_generator.MapURLGenerator((app.lat, app.lng), (-41.288712, 174.761792))
-    api_url = downloader.generate_url()
-
     data = {
         'status': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         'gyro': {
@@ -48,21 +50,16 @@ def data():
             'z': randint(0, 100)
         },
         'location': {
-            'current': {
-                'lat': -41.2880647,
-                'lng': 174.7617035
-            },
             'target': {
-                'lat': app.lat,
-                'lng': app.lng
-            },
-            'request_url': api_url
+                'lat': APP.lat,
+                'lng': APP.lng
+            }
         },
         'markers': [
           {
             'position': {
-                'lat': app.lat,
-                'lng': app.lng
+                'lat': APP.lat,
+                'lng': APP.lng
                 },
             'label': 'R',
             'key': 'target'
@@ -73,13 +70,24 @@ def data():
     return json.dumps(data)
 
 
-if __name__ == '__main__':
-    try:
-        _thread.start_new_thread(updateRocketLocation, ("SerialThread", 1))
-    except:
-        print("Failed to start Serial thread")
-        sys.exit()
+class MessengerThread (threading.Thread):
+    def __init__(self, threadID, name):
+        threading.Thread.__init__(self)
+        self.threadID = threadID
+        self.name = name
 
-    app.lat = -41.2880647
-    app.lng = 174.7617035
-    app.run(debug=DEBUG)
+    def run(self):
+        while True:
+            MESSENGER.send("rocket_location")
+            response = MESSENGER.receive()
+            location = response[1][0]
+            formatted_string = location.replace("/.", ".").split(",")
+            formatted_location = list(map(float, formatted_string))
+            APP.lat = formatted_location[0]
+            APP.lng = formatted_location[1]
+
+
+if __name__ == '__main__':
+    messengerThread = MessengerThread(1, "Messenger-thread")
+    messengerThread.start()
+    APP.run(debug=DEBUG)
