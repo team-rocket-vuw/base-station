@@ -2,7 +2,7 @@ import PyCmdMessenger
 import threading
 import time
 
-SERIAL_PORT = "/dev/cu.usbmodem1411"
+SERIAL_PORT = "/dev/cu.usbmodem1421"
 BAUD_RATE = 9600
 
 ARDUINO_INTERFACE = PyCmdMessenger.ArduinoBoard(SERIAL_PORT, baud_rate = BAUD_RATE)

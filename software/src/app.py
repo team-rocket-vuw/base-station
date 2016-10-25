@@ -12,6 +12,9 @@ import json
 # CmdMessenger service
 from services import py_cmd_messenger
 
+# OpenRocket service
+from services import open_rocket_simulations
+
 #TODO remove this. Here for testing only
 from random import randint
 
@@ -48,6 +51,13 @@ def data():
           }
         ],
     }
+
+    return json.dumps(data)
+
+@APP.route('/simulations')
+def simulations():
+    service = open_rocket_simulations.OpenRocketSimulations()
+    data = service.run_simulations()
 
     return json.dumps(data)
 
