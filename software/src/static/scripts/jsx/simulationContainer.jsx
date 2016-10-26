@@ -90,17 +90,40 @@ var Launch = React.createClass({
 });
 
 var Simulation = React.createClass({
-  formattedSimulationData: function() {
+  getInitialState: function() {
     var launches = [];
 
     for (var launch in this.props.data) {
       launches.push(<Launch name={launch} data={this.props.data[launch]} />);
     }
-    return(
-      <div className="launches-container">
-        {launches}
-      </div>
-    )
+
+    return({
+      launches: launches,
+      display: false
+    });
+  },
+
+  toggleDisplayState: function() {
+    this.setState({
+      display: !this.state.display
+    });
+  },
+
+  formattedSimulationData: function() {
+    if (this.state.display) {
+      return(
+        <div className="launches-container">
+          <input className="toggle-button" type="button" value="Toggle Data" onClick={this.toggleDisplayState} />
+          {this.state.launches}
+        </div>
+      )
+    } else {
+      return(
+        <div className="launches-container">
+          <input className="toggle-button" type="button" value="Toggle Data" onClick={this.toggleDisplayState} />
+        </div>
+      )
+    }
   },
 
   render: function() {

@@ -12,6 +12,13 @@
     margin-bottom: 20px;
   }
 
+  .launches-container {
+    .toggle-button {
+      clear: both;
+      display: block;
+    }
+  }
+
   .launch-container {
     display: inline-block;
     float: left;
