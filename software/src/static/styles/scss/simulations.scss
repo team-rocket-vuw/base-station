@@ -1,0 +1,22 @@
+.simulations-content {
+  h1, h2, h3, h4, p {
+    margin: 0;
+    padding: 0;
+  }
+
+  .simulation-name {
+    clear: both;
+  }
+
+  .launch-container {
+    display: inline-block;
+    float: left;
+    border: 1px solid black;
+    margin: 1px;
+
+    .launch-name, .launch-angle  {
+      margin-bottom: 2px;
+    }
+  }
+}
+

@@ -59,7 +59,7 @@ def simulations():
     service = open_rocket_simulations.OpenRocketSimulations()
     data = service.run_simulations()
 
-    return json.dumps(data)
+    return data
 
 
 if __name__ == '__main__':
