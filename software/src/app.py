@@ -3,11 +3,12 @@
 #TODO modularise this file
 
 # Web framework imports
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 
 # system imports
 from datetime import datetime
 import json
+import requests
 
 # CmdMessenger service
 from services import py_cmd_messenger
@@ -61,8 +62,18 @@ def simulations():
 
     return data
 
+@APP.route('/weather', methods=['POST'])
+def weather():
+    lat = request.args.get('lat')
+    lng = request.args.get('lng')
+    APPID = request.args.get('APPID')
+    response = requests.get(url="http://api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + lng + "&APPID=" + APPID)
+    return json.dumps(response.json())
+
 
 if __name__ == '__main__':
+    APP.lat = 0
+    APP.lng = 0
     pyCmdMessenger = py_cmd_messenger.PyCmdMessenger(1, "Messenger-thread", APP)
     pyCmdMessenger.start()
     APP.run(debug=DEBUG)
