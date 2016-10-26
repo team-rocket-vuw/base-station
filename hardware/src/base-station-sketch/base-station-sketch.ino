@@ -2,7 +2,7 @@
 #include "CmdMessenger.h"
 
 // Defines
-#define BAUD_RATE = 9600;
+#define BAUD_RATE 9600;
 
 // Define list of possible commands
 enum {
