@@ -34,6 +34,8 @@ var Map = React.createClass({
       var lat = position.coords.latitude;
       var lng = position.coords.longitude;
 
+      this.props.onCurrentLocationSet({lat: lat, lng: lng});
+
       this.setState({
         currentMarkerSet: true,
         currentMarker: {

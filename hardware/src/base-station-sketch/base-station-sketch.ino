@@ -1,63 +1,48 @@
-/*
-  Basestation electronics sketch
-  
-  This sketch contains code to communicate with the rocket on the launch pad via 2.4GHz WiFi,
-  and then allows communication over the 434MHz band post-launch
-  This sketch is written for use on a Teensy 3.1/3.2
-  
-  The circuit: 
-  * Components Used:
-    - ESP8266-01 WiFi Module
-      * TXD - pin 9
-      * RXD - pin 10
-    - RFM22B-S2 434MHz radio tranciever
-      * SDI    - pin 11
-      * SDO    - pin 12
-      * CLK    - pin 13
-      * CS     - as defined in radioChipSelect field
-      
-  Created 28 August 2016
-  By Jamie Sanson
-  
-  Modified 28 August 2016
-  By Jamie Sanson
-  
-*/
+// includes
+#include "CmdMessenger.h"
 
-// region includes
-#include <ESP8266.h>
-// end region
+// Defines
+#define BAUD_RATE 9600;
 
-// region macro definitions
-#define espSerial Serial2
-#define serialBaud 115200
-#define espSerialBaud 9600
-// end region
+// Define list of possible commands
+enum {
+    get_rocket_location,
+    rocket_location_response,
+    send_rocket_command,
+    rocket_command_response,
+    error,
+};
 
-// region pin definitions
-int8_t radioChipSelect = 5;
-int8_t radioIntPin = 15;
-// end region
+// Create CmdMessenger instance
+CmdMessenger messenger = CmdMessenger(Serial);
 
-// region flags
-boolean serialDebugMode = true;
-// end region
+/* Set up messenger callbacks */
 
-// region library instantiation
-ESP8266 wifi(espSerial);
-// end region
+void on_get_rocket_location(void) {
+    messenger.sendCmd(rocket_location_response, "41/.432/,13/.541");
+}
+
+void on_send_rocket_command(void) {
+    int value1 = messenger.readBinArg<int>();
+    messenger.sendBinCmd(rocket_command_response, value1);
+}
+
+void on_unknown_command(void) {
+    messenger.sendCmd(error,"Command without callback.");
+}
+
+// Attach the callbacks
+void attach_callbacks(void) {
+    messenger.attach(get_rocket_location, on_get_rocket_location);
+    messenger.attach(send_rocket_command, on_send_rocket_command);
+    messenger.attach(on_unknown_command);
+}
 
 void setup() {
-  if (serialDebugMode) {
-    Serial.begin(serialBaud);
-
-    // block until serial sent to teensy
-    while (!Serial.available());
-  }
-  
-  // TODO: Radio initialisation and WiFi connection
+    Serial.begin(BAUD_RATE);
+    attach_callbacks();
 }
 
 void loop() {
-  // TODO: WiFi & Serial listening and cmd forwarding
+    messenger.feedinSerialData();
 }
