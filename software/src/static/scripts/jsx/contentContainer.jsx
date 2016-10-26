@@ -2,6 +2,7 @@ import React from 'react';
 
 import Map from './map.jsx';
 import SimulationContainer from './simulationContainer.jsx';
+import WeatherContainer from './weatherContainer.jsx';
 
 var ContentContainer = React.createClass({
   getInitialState: function() {
@@ -95,6 +96,20 @@ var ContentContainer = React.createClass({
     });
   },
 
+  getWeatherContent: function() {
+    return(
+      <div className="react-content">
+        <WeatherContainer weatherData={this.state.weatherData} location={this.state.location} onWeatherDataSet={this.onWeatherDataSet} />
+      </div>
+    )
+  },
+
+  onWeatherDataSet: function(data) {
+    this.setState({
+      weatherData: data
+    });
+  },
+
   render: function() {
     switch(this.props.selectedSection) {
       case "status":
@@ -110,6 +125,11 @@ var ContentContainer = React.createClass({
       case "simulations":
         return(
           this.getSimulationContent()
+        );
+        break;
+      case "weather":
+        return(
+          this.getWeatherContent()
         );
         break;
       default:
