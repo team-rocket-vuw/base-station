@@ -99,9 +99,15 @@ var ContentContainer = React.createClass({
   getWeatherContent: function() {
     return(
       <div className="react-content">
-        <WeatherContainer />
+        <WeatherContainer weatherData={this.state.weatherData} location={this.state.location} onWeatherDataSet={this.onWeatherDataSet} />
       </div>
     )
+  },
+
+  onWeatherDataSet: function(data) {
+    this.setState({
+      weatherData: data
+    });
   },
 
   render: function() {
