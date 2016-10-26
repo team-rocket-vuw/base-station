@@ -1,62 +1,67 @@
 import React from 'react';
 import $ from "jquery";
+import rd3 from 'rd3';
 
-const LineChart = require("react-chartjs").Line;
+const LineChart = rd3.LineChart;
 
-var SimulationBarChart = React.createClass({
-  render: function() {
+var SimulationLineChart = React.createClass({
+  getInitialState: function() {
     var labels = [];
     var maxAltitudes = [];
     var maxVelocities = [];
+    var maxAccelerations = [];
 
+    var counter = 0;
     for(var launch in this.props.data) {
       labels.push(launch);
-      maxAltitudes.push(this.props.data[launch]["launchStatistics"]["maxAltitude"]);
-      maxVelocities.push(this.props.data[launch]["launchStatistics"]["maxVelocity"]);
+      maxAltitudes.push({x: counter, y: this.props.data[launch]["launchStatistics"]["maxAltitude"]});
+      maxVelocities.push({x: counter, y: this.props.data[launch]["launchStatistics"]["maxVelocity"]});
+      maxAccelerations.push({x: counter, y: this.props.data[launch]["launchStatistics"]["maxAcceleration"]});
+      counter++;
     }
 
-    var data = {
-      labels: labels,
-      datasets: [
-        {
-          label: "Max Altitudes",
-          fillColor: "transparent",
-          strokeColor: "black",
-          pointColor: "black",
-          pointStrokeColor: "black",
-          pointHighlightFill: "black",
-          pointHighlightStroke: "black",
-          yAxisID: "maxAltitudeAxis",
-          data: maxAltitudes
-        },
-        {
-          label: "Max Velocities",
-          fillColor: "transparent",
-          strokeColor: "red",
-          pointColor: "red",
-          pointStrokeColor: "red",
-          pointHighlightFill: "red",
-          pointHighlightStroke: "red",
-          yAxisID: "maxVelocityAxis",
-          data: maxVelocities
-        },
-      ]
-    };
+    var data = [
+      {
+        name: 'Max Altitude',
+        values: maxAltitudes
+      },
+      {
+        name: 'Max Velocity',
+        values: maxVelocities
+      },
+      {
+        name: 'Max Acceleration',
+        values: maxAccelerations
+      },
+    ];
 
-    var options = {
-      scales: {
-        yAxes: [{
-          position: "left",
-          "id": "maxAltitudeAxis"
-        }, {
-          position: "right",
-          "id": "maxVelocityAxis"
-        }]
-      }
-    }
+    return({
+      data: data
+    });
+  },
 
-    return <LineChart data={data} options={options} width="800" height="600" />
-  }
+  render: function() {
+    return(
+      <div className="simulation-chart">
+        <LineChart
+          legend={true}
+          data={this.state.data}
+          width='800px'
+          height={400}
+          viewBoxObject={{
+            x: 0,
+            y: 0,
+            width: 500,
+            height: 400
+          }}
+          title="Simulation Data Chart"
+          yAxisLabel="Unit"
+          xAxisLabel="Launch Number"
+          domain={{x: [,46], y: [0,]}}
+          gridHorizontal={true}
+        />
+      </div>
+  )}
 });
 
 var Launch = React.createClass({
@@ -102,7 +107,7 @@ var Simulation = React.createClass({
     return(
       <div className="simulation">
         <h3 className="simulation-name">Simulation Name: {this.props.name}</h3>
-        <SimulationBarChart data={this.props.data} />
+        <SimulationLineChart data={this.props.data} />
         {this.formattedSimulationData()}
       </div>
     );
