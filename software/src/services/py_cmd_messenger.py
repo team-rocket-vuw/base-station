@@ -7,8 +7,8 @@ BAUD_RATE = 9600
 
 ARDUINO_INTERFACE = PyCmdMessenger.ArduinoBoard(SERIAL_PORT, baud_rate = BAUD_RATE)
 
-MESSENGER_COMMANDS= [["rocket_location",""],
-                    ["rocket_location_is","s"],
+MESSENGER_COMMANDS= [["get_rocket_location",""],
+                    ["rocket_location_response","s"],
                     ["send_rocket_command","i"],
                     ["rocket_command_response","s"],
                     ["error","s"]]
@@ -24,7 +24,7 @@ class PyCmdMessenger(threading.Thread):
 
     def run(self):
         while True:
-            MESSENGER.send("rocket_location")
+            MESSENGER.send("get_rocket_location")
             response = MESSENGER.receive()
             location = response[1][0]
             formatted_string = location.replace("/.", ".").split(",")

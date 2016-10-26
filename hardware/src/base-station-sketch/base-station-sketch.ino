@@ -1,51 +1,41 @@
-/* -----------------------------------------------------------------------------
- * Example .ino file for arduino, compiled with CmdMessenger.h and
- * CmdMessenger.cpp in the sketch directory.
- *----------------------------------------------------------------------------*/
-
+// includes
 #include "CmdMessenger.h"
 
-/* Define available CmdMessenger commands */
+// Defines
+#define BAUD_RATE = 9600;
+
+// Define list of possible commands
 enum {
-    rocket_location,
-    rocket_location_is,
+    get_rocket_location,
+    rocket_location_response,
     send_rocket_command,
     rocket_command_response,
     error,
 };
 
-/* Initialize CmdMessenger -- this should match PyCmdMessenger instance */
-const int BAUD_RATE = 9600;
-CmdMessenger c = CmdMessenger(Serial,',',';','/');
+// Create CmdMessenger instance
+CmdMessenger messenger = CmdMessenger(Serial);
 
-/* Create callback functions to deal with incoming messages */
+/* Set up messenger callbacks */
 
-/* callback */
-void on_rocket_location(void){
-    c.sendCmd(rocket_location_is, "41/.432/,13/.541");
+void on_get_rocket_location(void) {
+    messenger.sendCmd(rocket_location_response, "41/.432/,13/.541");
 }
 
-/* callback */
-void on_send_rocket_command(void){
-
-    /* Grab two integers */
-    int value1 = c.readBinArg<int>();
-
-    /* Send result back */
-    c.sendBinCmd(rocket_command_response, value1);
+void on_send_rocket_command(void) {
+    int value1 = messenger.readBinArg<int>();
+    messenger.sendBinCmd(rocket_command_response, value1);
 }
 
-/* callback */
-void on_unknown_command(void){
-    c.sendCmd(error,"Command without callback.");
+void on_unknown_command(void) {
+    messenger.sendCmd(error,"Command without callback.");
 }
 
-/* Attach callbacks for CmdMessenger commands */
+// Attach the callbacks
 void attach_callbacks(void) {
-
-    c.attach(rocket_location, on_rocket_location);
-    c.attach(send_rocket_command, on_send_rocket_command);
-    c.attach(on_unknown_command);
+    messenger.attach(get_rocket_location, on_get_rocket_location);
+    messenger.attach(send_rocket_command, on_send_rocket_command);
+    messenger.attach(on_unknown_command);
 }
 
 void setup() {
@@ -54,5 +44,5 @@ void setup() {
 }
 
 void loop() {
-    c.feedinSerialData();
+    messenger.feedinSerialData();
 }
