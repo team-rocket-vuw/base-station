@@ -1,7 +1,8 @@
 import os
+from jnius import autoclass
+
 JAR_FILE = "/openrocket.jar"
 os.environ['CLASSPATH'] = os.getcwd() + JAR_FILE
-from jnius import autoclass
 
 class OpenRocketSimulations:
     ENTRY_CLASS = 'TeamRocket'
