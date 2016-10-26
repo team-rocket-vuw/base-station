@@ -29,3 +29,10 @@ Alternately you can run `npm run build` to just build the jsx and scss files onc
 
 Then `sh run.sh` or `./run.sh` and open a browser at `http://127.0.0.1:5000/`
 
+###Data dependencies
+
+Both the `open_rocket.jar` and `teamrocket.ork` files should be placed within `data/` so that they're correctly pathed.
+
+- __openrocket.jar__ - This is required so that the simulations can be executed by hooking into the java codebase
+- __teamrocket.ork__ - This is the premade `.ork` file that contains the build of the rocket, and all simulations that need to be run.
+

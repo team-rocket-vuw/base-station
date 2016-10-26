@@ -1,12 +1,11 @@
 import React from 'react';
 
 import Map from './map.jsx';
+import SimulationContainer from './simulationContainer.jsx';
 
 var ContentContainer = React.createClass({
   getInitialState: function() {
-    return({
-
-    })
+    return({})
   },
 
   getStatusContent: function() {
@@ -80,22 +79,46 @@ var ContentContainer = React.createClass({
     });
   },
 
+  getSimulationContent: function() {
+    return(
+      <div className="react-content">
+        <SimulationContainer onSimulationsComplete={this.onSimulationsComplete} />
+      </div>
+    );
+  },
+
+  onSimulationsComplete: function(data) {
+    this.setState({
+      simulation_data: {
+        data: data
+      }
+    });
+  },
+
   render: function() {
     switch(this.props.selectedSection) {
       case "status":
         return(
           this.getStatusContent()
         );
+        break;
       case "location":
         return (
           this.getLocationContent()
         );
+        break;
+      case "simulations":
+        return(
+          this.getSimulationContent()
+        );
+        break;
       default:
         return(
           <div className="react-content">
             <p>Currently selected section: {this.props.selectedSection}</p>
           </div>
         );
+        break;
     }
   }
 });
