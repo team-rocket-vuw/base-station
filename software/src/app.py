@@ -30,11 +30,6 @@ def index():
 def data():
     data = {
         'status': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        'gyro': {
-            'x': randint(0, 100),
-            'y': randint(0, 100),
-            'z': randint(0, 100)
-        },
         'location': {
             'target': {
                 'lat': APP.lat,

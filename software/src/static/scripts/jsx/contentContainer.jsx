@@ -15,13 +15,6 @@ var ContentContainer = React.createClass({
       <div className="react-content">
         <h2>{this.props.data.status}</h2>
 
-        <h3>Gyro data</h3>
-        <ul>
-          <li>x: {this.props.data.gyro.x}</li>
-          <li>y: {this.props.data.gyro.y}</li>
-          <li>z: {this.props.data.gyro.z}</li>
-        </ul>
-
         <h3>Location</h3>
         <ul>
           <li>Target</li>

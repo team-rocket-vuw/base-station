@@ -7,13 +7,15 @@ BAUD_RATE = 115200
 
 ARDUINO_INTERFACE = PyCmdMessenger.ArduinoBoard(SERIAL_PORT, baud_rate = BAUD_RATE)
 
-MESSENGER_COMMANDS= [["get_rocket_location",""],
-                    ["rocket_location_response","s"],
-                    ["send_rocket_command","i"],
-                    ["rocket_command_response","s"],
-                    ["rocket_acknowledge_command", "s"],
-                    ["rocket_init_info", "s"],
-                    ["error","s"]]
+MESSENGER_COMMANDS = [
+                        ["get_rocket_location",""],
+                        ["rocket_location_response","s"],
+                        ["send_rocket_command","i"],
+                        ["rocket_command_response","s"],
+                        ["rocket_acknowledge_command", "s"],
+                        ["rocket_init_info", "s"],
+                        ["error","s"]
+                    ]
 
 MESSENGER = PyCmdMessenger.CmdMessenger(ARDUINO_INTERFACE, MESSENGER_COMMANDS)
 
@@ -40,13 +42,7 @@ class PyCmdMessenger(threading.Thread):
         return response
 
     def run(self):
-        print("TODO remove me")
-        # while True:
-        #     MESSENGER.send("get_rocket_location")
-        #     response = MESSENGER.receive()
-        #     location = response[1][0]
-        #     formatted_string = location.replace("/.", ".").split(",")
-        #     formatted_location = list(map(float, formatted_string))
-        #     self.server.lat = formatted_location[0]
-        #     self.server.lng = formatted_location[1]
+        while True:
+            MESSENGER.send("get_rocket_state_info")
+            response = MESSENGER.receive()
 
