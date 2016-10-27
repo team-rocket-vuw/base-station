@@ -8,12 +8,10 @@ BAUD_RATE = 115200
 ARDUINO_INTERFACE = PyCmdMessenger.ArduinoBoard(SERIAL_PORT, baud_rate = BAUD_RATE)
 
 MESSENGER_COMMANDS = [
-                        ["get_rocket_location",""],
-                        ["rocket_location_response","s"],
                         ["send_rocket_command","i"],
                         ["rocket_command_response","s"],
-                        ["rocket_acknowledge_command", "s"],
-                        ["rocket_init_info", "s"],
+                        ["get_rocket_state_info", ""],
+                        ["rocket_state_response", "s"],
                         ["error","s"]
                     ]
 
@@ -45,4 +43,6 @@ class PyCmdMessenger(threading.Thread):
         while True:
             MESSENGER.send("get_rocket_state_info")
             response = MESSENGER.receive()
+            print(response)
+            time.sleep(1)
 

@@ -14,12 +14,10 @@ enum {
 
 // Define list of possible commands
 enum {
-  get_rocket_location,
-  rocket_location_response,
   send_rocket_command,
   rocket_command_response,
-  rocket_acknowledge_command,
-  rocket_init_info,
+  get_rocket_state_info,
+  rocket_state_response,
   error,
 };
 
@@ -54,17 +52,15 @@ String gps_lng = "Uninitialised";
 
 int state = pre_init;
 
+boolean isPostEquals = false;
+
 // Create CmdMessenger instance
 CmdMessenger messenger = CmdMessenger(Serial);
 
 /* Set up messenger callbacks */
 
-void on_get_rocket_location(void) {
-  messenger.sendCmd(rocket_location_response, "41/.432/,13/.541");
-}
-
 void on_get_rocket_state_info(void) {
-    messenger.sendCmd(rocket_init_state_response, info);
+    messenger.sendCmd(rocket_state_response, info);
 }
 
 void on_send_rocket_command(void) {
@@ -102,7 +98,6 @@ void on_unknown_command(void) {
 
 // Attach the callbacks
 void attach_callbacks(void) {
-    messenger.attach(get_rocket_location, on_get_rocket_location);
     messenger.attach(get_rocket_state_info, on_get_rocket_state_info);
     messenger.attach(send_rocket_command, on_send_rocket_command);
     messenger.attach(on_unknown_command);
@@ -117,15 +112,11 @@ void setup() {
 
 void loop() {
   messenger.feedinSerialData();
-
-  if (state == initialising || state == gps_locking) {
-    feedinInitSerialData();
-  }
+  feedinInitSerialData();
 }
 
 // Presentation mock functions
 void feedinInitSerialData() {
-  boolean isPostEquals = false;
   if (mockWireless.available()) {
     char rec = mockWireless.read();
     if (String(rec) == ";") {
@@ -133,7 +124,7 @@ void feedinInitSerialData() {
     } else if (String(rec) == "=") {
       isPostEquals = true;
     } else {
-      if (isPostEquals) {
+      if (!isPostEquals) {
         responseBuffer += String(rec);
       } else {
         status += String(rec);
@@ -164,20 +155,21 @@ void updateState() {
   // Clear fields at this point
   responseBuffer = "";
   status = "";
+  isPostEquals = false;
 
-  info = "{\n";
+  info = "{";
 
-  info += "init_info: {\n";
+  info += "init_info: {";
   info += "DM: " + getStateName(dmState);
   info += "RFM: " + getStateName(rfmState);
-  info += "}";
+  info += "}/,";
 
-  info = "gps_info: {\n";
-  info += "READY: " + gps_state + ",\n";
-  info += "VIS: " + gps_vis + ",\n";
-  info += "LAT: " + gps_lat + ",\n";
-  info += "LNG: " + gps_lng + ",\n";
-  info += "}\n";
+  info += "gps_info: {";
+  info += "READY: " + gps_state + "/,";
+  info += "VIS: " + gps_vis + "/,";
+  info += "LAT: " + gps_lat + "/,";
+  info += "LNG: " + gps_lng + "/,";
+  info += "}";
 
   info += "}";
 }
@@ -185,16 +177,16 @@ void updateState() {
 String getStateName(int componentState) {
   switch (componentState) {
     case component_pre_init:
-      return "\"waiting\",\n";
+      return "\"waiting\"/,";
       break;
     case component_success:
-      return "\"True\",\n";
+      return "\"True\"/,";
       break;
     case component_fail:
-      return "\"False\",\n";
+      return "\"False\"/,";
       break;
     default:
-      return "\"Not recognised\",\n";
+      return "\"Not recognised\"/,";
       break;
   }
 }
