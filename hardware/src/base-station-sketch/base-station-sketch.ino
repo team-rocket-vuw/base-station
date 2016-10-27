@@ -3,7 +3,7 @@
 
 // Defines
 #define BAUD_RATE 115200
-#define mockWireless Serial2
+#define rocketConnection Serial2
 
 // Possible rocket command list
 enum {
@@ -12,7 +12,8 @@ enum {
   begin_loop = 2,
 };
 
-// Define list of possible commands
+// Define list of possible commands sent from pyCommandMessenger,
+// as well as responses
 enum {
   send_rocket_command,
   rocket_command_response,
@@ -21,7 +22,7 @@ enum {
   error,
 };
 
-// Defines possible rocket states
+// Defines possible rocket states, changed by data fed back via rocket connection
 enum {
   pre_init,
   initialising,
@@ -30,6 +31,7 @@ enum {
   running,
 };
 
+// Defines individual component state to be reported when rocket state is requested
 enum {
   component_pre_init,
   component_success,
@@ -37,7 +39,7 @@ enum {
 };
 
 // Holds string which contains Initialisation information
-String responseBuffer = "";
+String state_type = "";
 String status = "";
 String info = "";
 
@@ -50,41 +52,37 @@ String gps_vis = "Uninitialised";
 String gps_lat = "Uninitialised";
 String gps_lng = "Uninitialised";
 
+// Overall rocket state
 int state = pre_init;
 
+// Used for feeding in rocket connection data
 boolean isPostEquals = false;
 
 // Create CmdMessenger instance
 CmdMessenger messenger = CmdMessenger(Serial);
 
-/* Set up messenger callbacks */
-
+// --------------------- CALLBACKS ---------------------
 void on_get_rocket_state_info(void) {
     messenger.sendCmd(rocket_state_response, info);
 }
 
 void on_send_rocket_command(void) {
     int value1 = messenger.readBinArg<int>();
+
+    if (state == running) {
+        messenger.sendCmd(rocket_command_response, "Main loop running");
+        return;
+    }
+
     switch (value1) {
       case start_initialisation:
-        sendMockSerial("start");
-        if (acknowledged()) {
-          messenger.sendCmd(rocket_command_response, "Initialisation started");
-          state = initialising;
-        }
+        tryStartInitialisation();
         break;
       case skip_gps:
-        sendMockSerial("skip_gps");
-        if (acknowledged()) {
-          messenger.sendCmd(rocket_command_response, "GPS skipped");
-          state = ready;
-        }
+        trySkipGPSLock();
         break;
       case begin_loop:
-        sendMockSerial("begin");
-        if (acknowledged()) {
-          messenger.sendCmd(rocket_command_response, "Main loop begin");
-        }
+        tryBeginLoop();
         break;
       default:
         messenger.sendCmd(rocket_command_response, "Command not recognised");
@@ -103,29 +101,88 @@ void attach_callbacks(void) {
     messenger.attach(on_unknown_command);
 }
 
+// --------------------- SETUP ---------------------
 void setup() {
     Serial.begin(BAUD_RATE);
-    mockWireless.begin(BAUD_RATE);
+    rocketConnection.begin(BAUD_RATE);
     attach_callbacks();
     updateState();
 }
 
+// --------------------- LOOP ---------------------
 void loop() {
   messenger.feedinSerialData();
-  feedinInitSerialData();
+  feedinStateData();
 }
 
-// Presentation mock functions
-void feedinInitSerialData() {
-  if (mockWireless.available()) {
-    char rec = mockWireless.read();
+// -------- ROCKET COMMUNICATION FUNCTIONS ----------
+
+/*
+Function to be called when start initialisation command recieved. Checks state and
+responds accordingly
+*/
+void tryStartInitialisation() {
+  if (state == gps_locking) {
+      sendMessage("start");
+      if (acknowledged()) {
+        messenger.sendCmd(rocket_command_response, "Initialisation started");
+        state = initialising;
+      }
+  } else {
+      messenger.sendCmd(rocket_command_response, "Rocket in incorrect state");
+  }
+}
+
+/*
+Function to be called when skip GPS command recieved. Checks state and
+responds accordingly
+*/
+void trySkipGPSLock() {
+  if (state == gps_locking) {
+      sendMessage("skip_gps");
+      if (acknowledged()) {
+        messenger.sendCmd(rocket_command_response, "GPS skipped");
+        state = ready;
+      }
+  } else {
+      messenger.sendCmd(rocket_command_response, "Rocket in incorrect state");
+  }
+}
+
+/*
+Function to be called when begin loop command recieved. Checks state and
+responds accordingly
+*/
+void tryBeginLoop() {
+  if (state == ready) {
+      sendMessage("begin");
+      if (acknowledged()) {
+        messenger.sendCmd(rocket_command_response, "Main loop started");
+        state = running;
+      }
+  } else {
+      messenger.sendCmd(rocket_command_response, "Rocket in incorrect state");
+  }
+}
+
+
+/*
+ Function to be called once per main loop iteration to feed in connection data to update rocket state.
+ State messages are formatted as follows:
+              GPSVIS=05;
+ This message conveys GPS visibility information, where data is separated by an equals sign and
+ concluded with a semicolon
+*/
+void feedinStateData() {
+  if (rocketConnection.available()) {
+    char rec = rocketConnection.read();
     if (String(rec) == ";") {
       updateState();
     } else if (String(rec) == "=") {
       isPostEquals = true;
     } else {
       if (!isPostEquals) {
-        responseBuffer += String(rec);
+        state_type += String(rec);
       } else {
         status += String(rec);
       }
@@ -133,30 +190,48 @@ void feedinInitSerialData() {
   }
 }
 
+/*
+Function to be called when consuming of one message is complete, or once during setup. This builds a formatted
+JSON hash containing two sub-hashes for easy parseability at the front-end, and stores it in the info field
+to be accessed when get_rocket_state_info is called.
+State types included:
+    Initialisation information:
+      DM: Data module initialisation
+      RFM: RFM22b radio module initialisation
+    GPS information:
+      GPS: General GPS state
+      GPSVIS: Visible satellites
+      GPSLAT: GPS latitude readout
+      GPSLNG: GPS longitude readout
+*/
 void updateState() {
-  if (responseBuffer == "DM") {
+  if (state_type == "DM") {
     int stateUpdate = (status == "OK") ? component_success : component_fail;
     dmState= stateUpdate;
-  } else if (responseBuffer == "RFM") {
+  } else if (state_type == "RFM") {
     int stateUpdate = (status == "OK") ? component_success : component_fail;
     rfmState = stateUpdate;
-  } else if (responseBuffer == "GPS") {
+  } else if (state_type == "GPS") {
     gps_state = status;
-  } else if (responseBuffer == "GPSVIS") {
+    if (gps_state == "locking") {
+      state = gps_locking;
+    }
+  } else if (state_type == "GPSVIS") {
     gps_vis = status;
-  } else if (responseBuffer == "GPSLAT") {
+  } else if (state_type == "GPSLAT") {
     gps_state = "ready";
     gps_lat = status;
-  } else if (responseBuffer == "GPSLNG") {
+  } else if (state_type == "GPSLNG") {
     gps_state = "ready";
     gps_lng = status;
   }
 
   // Clear fields at this point
-  responseBuffer = "";
+  state_type = "";
   status = "";
   isPostEquals = false;
 
+  // Formatting state information into JSON hash
   info = "{";
 
   info += "'init_info': {";
@@ -174,58 +249,65 @@ void updateState() {
   info += "}";
 }
 
-String getStateName(int componentState, bool last) {
+/*
+Function which takes a component state, enumerated at the top of the file and
+whether or not this is the last field in the JSON hash/sub-hash to add commas
+appropriately.
+*/
+String getStateName(int componentState, boolean last) {
+  String toReturn = "";
+
   switch (componentState) {
     case component_pre_init:
-    if (last) {
-        return "'waiting'";
-      } else {
-        return "'waiting'/,";
-      }
+      toReturn =  "'waiting'";
       break;
     case component_success:
-      if (last) {
-        return "'True'";
-      } else {
-        return "'True'/,";
-      }
+      toReturn = "'True'";
       break;
     case component_fail:
-      if (last) {
-        return "'False'";
-      } else {
-        return "'False'/,";
-      }
+      toReturn = "'False'";
       break;
     default:
-      if (last) {
-        return "'Not recognised'";
-      } else {
-        return "'Not recognised'/,";
-      }
+      toReturn = "'Not recognised'";
       break;
   }
+
+  return toReturn + (last ? "/," : "");
 }
 
+/*
+Function which waits for an acknowledged response from the rocket
+*/
 boolean acknowledged() {
-  String res = waitMockResponse();
+  String res = waitResponse();
   return (res == "ok");
 }
 
-void sendMockSerial(String message) {
-  mockWireless.println(message);
+/*
+Function which sends a given message over the rocket connection
+*/
+void sendMessage(String message) {
+  rocketConnection.println(message);
 }
 
-String waitMockResponse() {
+/*
+Function which waits for information to be sent to the base station via the
+rocket connection, strips newline and cariage returns and then flushes any
+further incoming serial from the recieved buffer of the base station teensy
+*/
+String waitResponse() {
   // Block until command recieved
-  while (!mockWireless.available());
+  while (!rocketConnection.available());
 
   String recieved;
   boolean stringComplete = false;
   while (!stringComplete) {
     // Only try read a char if it's available
-    if (mockWireless.available()) {
-      char recChar = mockWireless.read();
+    if (rocketConnection.available()) {
+      // Read in a character
+      char recChar = rocketConnection.read();
+      // Complete the string if the read char is a line break, else concat onto the
+      // recieved string
       if (String(recChar) == "\n" || String(recChar) == "\r") {
         stringComplete = true;
       } else {
@@ -242,7 +324,7 @@ String waitMockResponse() {
 
 // Stupid hack to clear out any remaining character
 void flushSerialBuffer() {
-  while (mockWireless.available()) {
-    char z = mockWireless.read();
+  while (rocketConnection.available()) {
+      rocketConnection.read();
   }
 }
