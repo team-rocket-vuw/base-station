@@ -29,24 +29,26 @@ def index():
 @APP.route('/data')
 def data():
     data = {
-        'status': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "rocket_state": APP.rocket_state,
         'location': {
             'target': {
-                'lat': APP.lat,
-                'lng': APP.lng
+                'lat': APP.rocket_state.gps_info.LAT,
+                'lng': APP.rocket_state.gps_info.LNG
             }
         },
         'markers': [
           {
             'position': {
-                'lat': APP.lat,
-                'lng': APP.lng
+                'lat': APP.rocket_state.gps_info.LAT,
+                'lng': APP.rocket_state.gps_info.LNG
                 },
             'label': 'R',
             'key': 'target'
           }
         ],
     }
+
+    print(data)
 
     return json.dumps(data)
 
@@ -84,6 +86,7 @@ def begin_command():
     return response_string
 
 if __name__ == '__main__':
+    APP.rocket_state = {}
     APP.lat = 0
     APP.lng = 0
     APP.pyCmdMessenger = py_cmd_messenger.PyCmdMessenger(1, "Messenger-thread", APP)
