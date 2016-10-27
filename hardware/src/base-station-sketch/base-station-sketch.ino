@@ -171,14 +171,14 @@ void updateState() {
   info += "init_info: {\n";
   info += "DM: " + getStateName(dmState);
   info += "RFM: " + getStateName(rfmState);
-  info += "}";
+  info += "},\n";
 
   info = "gps_info: {\n";
   info += "READY: " + gps_state + ",\n";
   info += "VIS: " + gps_vis + ",\n";
   info += "LAT: " + gps_lat + ",\n";
   info += "LNG: " + gps_lng + ",\n";
-  info += "}\n";
+  info += "},\n";
 
   info += "}";
 }
