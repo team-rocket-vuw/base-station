@@ -104,7 +104,7 @@ void on_unknown_command(void) {
 // Attach the callbacks
 void attach_callbacks(void) {
     messenger.attach(get_rocket_location, on_get_rocket_location);
-    messenger.attach(get_rocket_init_info, on_get_rocket_init_info);
+    messenger.attach(get_rocket_state_info, on_get_rocket_state_info);
     messenger.attach(send_rocket_command, on_send_rocket_command);
     messenger.attach(on_unknown_command);
 }
@@ -155,10 +155,10 @@ void updateState() {
   } else if (responseBuffer == "GPSVIS") {
     gps_vis = status;
   } else if (responseBuffer == "GPSLAT") {
-    gpsReady = true;
+    gps_state = "ready";
     gps_lat = status;
   } else if (responseBuffer == "GPSLNG") {
-    gpsReady = true;
+    gps_state = "ready";
     gps_lng = status;
   }
 
@@ -168,17 +168,17 @@ void updateState() {
 
   info = "{\n";
 
-  info += "init_info: {\n"
+  info += "init_info: {\n";
   info += "DM: " + getStateName(dmState);
   info += "RFM: " + getStateName(rfmState);
-  info += "}"
+  info += "}";
 
-  info = "gps_info: {\n"
+  info = "gps_info: {\n";
   info += "READY: " + gps_state + ",\n";
   info += "VIS: " + gps_vis + ",\n";
   info += "LAT: " + gps_lat + ",\n";
   info += "LNG: " + gps_lng + ",\n";
-  info += "}\n"
+  info += "}\n";
 
   info += "}";
 }
@@ -193,6 +193,9 @@ String getStateName(int componentState) {
       break;
     case component_fail:
       return "\"False\",\n";
+      break;
+    default:
+      return "\"Not recognised\",\n";
       break;
   }
 }
