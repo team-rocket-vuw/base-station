@@ -165,10 +165,10 @@ void updateState() {
   info += "}/,";
 
   info += "gps_info: {";
-  info += "READY: \"" + gps_state + "\"/,";
-  info += "VIS: \"" + gps_vis + "\"/,";
-  info += "LAT: \"" + gps_lat + "\"/,";
-  info += "LNG: \"" + gps_lng + "\"/,";
+  info += "READY: " + gps_state + "/,";
+  info += "VIS: " + gps_vis + "/,";
+  info += "LAT: " + gps_lat + "/,";
+  info += "LNG: " + gps_lng + "/,";
   info += "}/,";
 
   info += "}";
@@ -177,16 +177,16 @@ void updateState() {
 String getStateName(int componentState) {
   switch (componentState) {
     case component_pre_init:
-      return "\"waiting\"/,";
+      return "waiting/,";
       break;
     case component_success:
-      return "\"True\"/,";
+      return "True/,";
       break;
     case component_fail:
-      return "\"False\"/,";
+      return "False/,";
       break;
     default:
-      return "\"Not recognised\"/,";
+      return "Not recognised/,";
       break;
   }
 }
