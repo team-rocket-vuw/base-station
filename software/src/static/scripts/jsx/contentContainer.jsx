@@ -3,6 +3,7 @@ import React from 'react';
 import Map from './map.jsx';
 import SimulationContainer from './simulationContainer.jsx';
 import WeatherContainer from './weatherContainer.jsx';
+import ControlsContainer from './controlsContainer.jsx';
 
 var ContentContainer = React.createClass({
   getInitialState: function() {
@@ -13,13 +14,6 @@ var ContentContainer = React.createClass({
     return(
       <div className="react-content">
         <h2>{this.props.data.status}</h2>
-
-        <h3>Gyro data</h3>
-        <ul>
-          <li>x: {this.props.data.gyro.x}</li>
-          <li>y: {this.props.data.gyro.y}</li>
-          <li>z: {this.props.data.gyro.z}</li>
-        </ul>
 
         <h3>Location</h3>
         <ul>
@@ -110,6 +104,14 @@ var ContentContainer = React.createClass({
     });
   },
 
+  getControlsContent: function() {
+    return(
+      <div className="react-content">
+        <ControlsContainer />
+      </div>
+    );
+  },
+
   render: function() {
     switch(this.props.selectedSection) {
       case "status":
@@ -132,11 +134,9 @@ var ContentContainer = React.createClass({
           this.getWeatherContent()
         );
         break;
-      default:
+      case "controls":
         return(
-          <div className="react-content">
-            <p>Currently selected section: {this.props.selectedSection}</p>
-          </div>
+          this.getControlsContent()
         );
         break;
     }
