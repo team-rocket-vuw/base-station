@@ -2,7 +2,7 @@ import React from 'react';
 
 var Sections = React.createClass({
   onSectionClick: function(e) {
-    let sections = ["status", "controls", "location", "weather", "simulations"];
+    let sections = ["launchOps", "weather", "simulations"];
     e.preventDefault();
 
     var targetId = e.currentTarget.dataset.id;
@@ -15,9 +15,7 @@ var Sections = React.createClass({
   render: function() {
     return (
       <ul className="sections">
-        <li onClick={this.onSectionClick} data-id="status" className={this.props.selectedSection == "status" ? "selected" : " "}>Status</li>
-        <li onClick={this.onSectionClick} data-id="controls" className={this.props.selectedSection == "controls" ? "selected" : " "}>Controls</li>
-        <li onClick={this.onSectionClick} data-id="location" className={this.props.selectedSection == "location" ? "selected" : " "}>Location</li>
+        <li onClick={this.onSectionClick} data-id="launchOps" className={this.props.selectedSection == "launchOps" ? "selected" : " "}>Launch Ops</li>
         <li onClick={this.onSectionClick} data-id="weather" className={this.props.selectedSection == "weather" ? "selected" : " "}>Weather</li>
         <li onClick={this.onSectionClick} data-id="simulations" className={this.props.selectedSection == "simulations" ? "selected" : " "}>Simulations</li>
       </ul>

@@ -10,22 +10,7 @@ var ContentContainer = React.createClass({
     return({})
   },
 
-  getStatusContent: function() {
-    return(
-      <div className="react-content">
-        <h2>{this.props.data.status}</h2>
-
-        <h3>Location</h3>
-        <ul>
-          <li>Target</li>
-          <li>lat: {this.props.data.location.target.lat}</li>
-          <li>long: {this.props.data.location.target.lng}</li>
-        </ul>
-      </div>
-    );
-  },
-
-  getLocationContent: function() {
+  getLaunchOpsContent: function() {
     var currentLat;
     var currentLng;
 
@@ -36,29 +21,32 @@ var ContentContainer = React.createClass({
       currentLat = "Not set"
       currentLng = "Not set"
     }
+
     return(
-      <div className="react-content">
-        <Map markers={this.props.data.markers} onCurrentLocationSet={this.onCurrentLocationSet} />
-
-        <div className="location-data-container">
-          <h2>Location Data</h2>
-
-          <div className="current-location">
+      <div className="launch-ops-container">
+        <ControlsContainer data={this.props.data} />
+        <div className="launch-data-container">
+          <div className="location-data">
+            <h3>Rocket</h3>
+            <ul className="location-data-list">
+              <li>lat: {this.props.data.location.target.lat}</li>
+              <li>long: {this.props.data.location.target.lng}</li>
+            </ul>
             <h3>Current</h3>
             <ul className="location-data-list">
               <li>lat: {currentLat}</li>
               <li>long: {currentLng}</li>
             </ul>
           </div>
-
-          <div className="rocket-location">
-            <h3>Rocket</h3>
-            <ul className="location-data-list">
-              <li>lat: {this.props.data.location.target.lat}</li>
-              <li>long: {this.props.data.location.target.lng}</li>
-            </ul>
-          </div>
         </div>
+      </div>
+    );
+  },
+
+  getLocationContent: function() {
+    return(
+      <div className="location-container">
+        <Map markers={this.props.data.markers} onCurrentLocationSet={this.onCurrentLocationSet} />
       </div>
     );
   },
@@ -104,24 +92,14 @@ var ContentContainer = React.createClass({
     });
   },
 
-  getControlsContent: function() {
-    return(
-      <div className="react-content">
-        <ControlsContainer />
-      </div>
-    );
-  },
-
   render: function() {
     switch(this.props.selectedSection) {
-      case "status":
+      case "launchOps":
         return(
-          this.getStatusContent()
-        );
-        break;
-      case "location":
-        return (
-          this.getLocationContent()
+          <div className="react-content">
+            {this.getLocationContent()}
+            {this.getLaunchOpsContent()}
+          </div>
         );
         break;
       case "simulations":
@@ -132,11 +110,6 @@ var ContentContainer = React.createClass({
       case "weather":
         return(
           this.getWeatherContent()
-        );
-        break;
-      case "controls":
-        return(
-          this.getControlsContent()
         );
         break;
     }

@@ -11,7 +11,7 @@ require('../../styles/scss/style.scss');
 var TeamRocket = React.createClass({
   getInitialState: function() {
     return {
-      selectedSection: 'status'
+      selectedSection: 'launchOps'
     };
   },
 

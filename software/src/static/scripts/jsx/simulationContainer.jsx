@@ -155,7 +155,7 @@ var SimulationContainer = React.createClass({
       dataType: 'json',
       success: function(data) {
         this.setState({
-          data: JSON.parse(data),
+          data: data,
           loading: false,
           loaded: true
         });

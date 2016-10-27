@@ -38,7 +38,6 @@ def data():
 def simulations():
     service = open_rocket_simulations.OpenRocketSimulations()
     data = service.run_simulations()
-
     return data
 
 @APP.route('/weather', methods=['POST'])
