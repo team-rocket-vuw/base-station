@@ -162,25 +162,14 @@ void updateState() {
   info += "init_info: {";
   info += "DM: " + getStateName(dmState);
   info += "RFM: " + getStateName(rfmState);
-<<<<<<< HEAD
-  info += "},\n";
-
-  info = "gps_info: {\n";
-  info += "READY: " + gps_state + ",\n";
-  info += "VIS: " + gps_vis + ",\n";
-  info += "LAT: " + gps_lat + ",\n";
-  info += "LNG: " + gps_lng + ",\n";
-  info += "},\n";
-=======
   info += "}/,";
 
   info += "gps_info: {";
-  info += "READY: " + gps_state + "/,";
-  info += "VIS: " + gps_vis + "/,";
-  info += "LAT: " + gps_lat + "/,";
-  info += "LNG: " + gps_lng + "/,";
-  info += "}";
->>>>>>> 0df97780b33c3f2b4205f0596e5918880af6d28d
+  info += "READY: " + "\"" + gps_state + "\"/,";
+  info += "VIS: " + "\"" + gps_vis + "\"/,";
+  info += "LAT: " + "\"" + gps_lat + "\"/,";
+  info += "LNG: " + "\"" + gps_lng + "\"/,";
+  info += "}/,";
 
   info += "}";
 }
