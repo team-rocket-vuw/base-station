@@ -14,13 +14,13 @@ enum {
 
 // Define list of possible commands
 enum {
-    get_rocket_location,
-    rocket_location_response,
-    send_rocket_command,
-    rocket_command_response,
-    rocket_acknowledge_command,
-    rocket_init_info,
-    error,
+  get_rocket_location,
+  rocket_location_response,
+  send_rocket_command,
+  rocket_command_response,
+  rocket_acknowledge_command,
+  rocket_init_info,
+  error,
 };
 
 // Defines possible rocket states
@@ -43,61 +43,61 @@ CmdMessenger messenger = CmdMessenger(Serial);
 /* Set up messenger callbacks */
 
 void on_get_rocket_location(void) {
-    messenger.sendCmd(rocket_location_response, "41/.432/,13/.541");
+  messenger.sendCmd(rocket_location_response, "41/.432/,13/.541");
 }
 
 void on_send_rocket_command(void) {
-    int value1 = messenger.readBinArg<int>();
-    switch (value1) {
-      case start_initialisation:
-        sendMockSerial("start");
-        if (acknowledged()) {
-          messenger.sendCmd(rocket_acknowledge_command, "Initialisation started");
-          state = initialising;
-        }
-        break;
-      case skip_gps:
-        sendMockSerial("skip_gps");
-        if (acknowledged()) {
-          messenger.sendCmd(rocket_acknowledge_command, "GPS skipped");
-          state = ready;
-        }
-        break;
-      case begin_loop:
-        sendMockSerial("begin");
-        if (acknowledged()) {
-          messenger.sendCmd(rocket_acknowledge_command, "Main loop begin");
-        }
-        break;
-      default:
-        messenger.sendCmd(error, "Command not recognised");
-        break;
-    }
+  int value1 = messenger.readBinArg<int>();
+  switch (value1) {
+    case start_initialisation:
+      sendMockSerial("start");
+      if (acknowledged()) {
+        messenger.sendCmd(rocket_command_response, "Initialisation started");
+        state = initialising;
+      }
+      break;
+    case skip_gps:
+      sendMockSerial("skip_gps");
+      if (acknowledged()) {
+        messenger.sendCmd(rocket_command_response, "GPS skipped");
+        state = ready;
+      }
+      break;
+    case begin_loop:
+      sendMockSerial("begin");
+      if (acknowledged()) {
+        messenger.sendCmd(rocket_command_response, "Main loop begin");
+      }
+      break;
+    default:
+      messenger.sendCmd(error, "Command not recognised");
+      break;
+  }
 }
 
 void on_unknown_command(void) {
-    messenger.sendCmd(error,"Command without callback.");
+  messenger.sendCmd(error, "Command without callback.");
 }
 
 // Attach the callbacks
 void attach_callbacks(void) {
-    messenger.attach(get_rocket_location, on_get_rocket_location);
-    messenger.attach(send_rocket_command, on_send_rocket_command);
-    messenger.attach(on_unknown_command);
+  messenger.attach(get_rocket_location, on_get_rocket_location);
+  messenger.attach(send_rocket_command, on_send_rocket_command);
+  messenger.attach(on_unknown_command);
 }
 
 void setup() {
-    Serial.begin(BAUD_RATE);
-    mockWireless.begin(BAUD_RATE);
-    attach_callbacks();
+  Serial.begin(BAUD_RATE);
+  mockWireless.begin(BAUD_RATE);
+  attach_callbacks();
 }
 
 void loop() {
-    messenger.feedinSerialData();
+  messenger.feedinSerialData();
 
-    if (state == initialising || state == gps_locking) {
-      feedinInitSerialData();
-    }
+  if (state == initialising || state == gps_locking) {
+    feedinInitSerialData();
+  }
 }
 
 // Presentation mock functions
@@ -126,9 +126,6 @@ boolean acknowledged() {
 }
 
 void sendMockSerial(String message) {
-  // Block until serial ready
-  while (!mockWireless.available());
-
   mockWireless.println(message);
 }
 
@@ -141,12 +138,12 @@ String waitMockResponse() {
   while (!stringComplete) {
     // Only try read a char if it's available
     if (mockWireless.available()) {
-       char recChar = mockWireless.read();
-       if (String(recChar) == "\n" || String(recChar) == "\r") {
-          stringComplete = true;
-        } else {
-          recieved += String(recChar);
-        }
+      char recChar = mockWireless.read();
+      if (String(recChar) == "\n" || String(recChar) == "\r") {
+        stringComplete = true;
+      } else {
+        recieved += String(recChar);
+      }
     }
   }
 

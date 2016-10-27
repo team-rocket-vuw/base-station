@@ -70,10 +70,27 @@ def weather():
     response = requests.get(url="http://api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + lng + "&APPID=" + APPID)
     return json.dumps(response.json())
 
+@APP.route('/start_command')
+def start_command():
+    response = APP.pyCmdMessenger.send_start_command()
+    response_string = response[0] + "," + (':'.join(response[1]))
+    return response_string
+
+@APP.route('/skip_command')
+def skip_command():
+    response = APP.pyCmdMessenger.send_skip_command()
+    response_string = response[0] + "," + (':'.join(response[1]))
+    return response_string
+
+@APP.route('/begin_command')
+def begin_command():
+    response = APP.pyCmdMessenger.send_begin_command()
+    response_string = response[0] + "," + (':'.join(response[1]))
+    return response_string
 
 if __name__ == '__main__':
     APP.lat = 0
     APP.lng = 0
-    pyCmdMessenger = py_cmd_messenger.PyCmdMessenger(1, "Messenger-thread", APP)
-    pyCmdMessenger.start()
+    APP.pyCmdMessenger = py_cmd_messenger.PyCmdMessenger(1, "Messenger-thread", APP)
+    APP.pyCmdMessenger.start()
     APP.run(debug=DEBUG)
