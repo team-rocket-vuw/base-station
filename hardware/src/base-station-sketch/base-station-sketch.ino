@@ -159,24 +159,34 @@ void updateState() {
 
   info = "{";
 
-  info += "init_info: {";
-  info += "DM: " + getStateName(dmState);
-  info += "RFM: " + getStateName(rfmState);
+  info += "'init_info': {";
+  info += "'DM': " + getStateName(dmState, false);
+  info += "'RFM': " + getStateName(rfmState, true);
   info += "}/,";
 
+<<<<<<< HEAD
   info += "gps_info: {";
   info += "READY: " + gps_state + "/,";
   info += "VIS: " + gps_vis + "/,";
   info += "LAT: " + gps_lat + "/,";
   info += "LNG: " + gps_lng + "/,";
   info += "}/,";
+=======
+  info += "'gps_info': {";
+  info += "'READY': '" + gps_state + "'/,";
+  info += "'VIS': '" + gps_vis + "'/,";
+  info += "'LAT': '" + gps_lat + "'/,";
+  info += "'LNG': '" + gps_lng + "'";
+  info += "}";
+>>>>>>> 072290ce6a63b7b64ba693b344cddb54a0852da7
 
   info += "}";
 }
 
-String getStateName(int componentState) {
+String getStateName(int componentState, bool last) {
   switch (componentState) {
     case component_pre_init:
+<<<<<<< HEAD
       return "waiting/,";
       break;
     case component_success:
@@ -187,6 +197,34 @@ String getStateName(int componentState) {
       break;
     default:
       return "Not recognised/,";
+=======
+    if (last) {
+        return "'waiting'";
+      } else {
+        return "'waiting'/,";  
+      }
+      break;
+    case component_success:
+      if (last) {
+        return "'True'";
+      } else {
+        return "'True'/,";  
+      }
+      break;
+    case component_fail:
+      if (last) {
+        return "'False'";
+      } else {
+        return "'False'/,";  
+      }
+      break;
+    default:
+      if (last) {
+        return "'Not recognised'";
+      } else {
+        return "'Not recognised'/,";  
+      }
+>>>>>>> 072290ce6a63b7b64ba693b344cddb54a0852da7
       break;
   }
 }

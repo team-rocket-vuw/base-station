@@ -1,6 +1,7 @@
 import PyCmdMessenger
 import threading
 import time
+import json
 
 SERIAL_PORT = "/dev/cu.usbmodem2129351"
 BAUD_RATE = 115200
@@ -43,6 +44,8 @@ class PyCmdMessenger(threading.Thread):
         while True:
             MESSENGER.send("get_rocket_state_info")
             response = MESSENGER.receive()
-            print(response)
-            time.sleep(1)
+            if response is not None:
+                response_json = response[1][0]
+                self.server.rocket_state = response_json
+                time.sleep(0.5)
 

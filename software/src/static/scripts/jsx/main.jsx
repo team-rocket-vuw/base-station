@@ -35,7 +35,40 @@ var refreshTime = 100;
 
 setInterval(function() {
   $.get("http://127.0.0.1:5000/data", function (response) {
-    var data = JSON.parse(response);
+    var responseData = JSON.parse(response);
+
+    var lat = 0;
+    var lng = 0;
+
+    if(responseData.rocket_state.gps_info) {
+      if(responseData.rocket_state.gps_info.LAT != "Uninitialised") {
+        lat = responseData.rocket_state.gps_info.LAT
+      }
+
+      if(responseData.rocket_state.gps_info.LNG != "Uninitialised") {
+        lng = responseData.rocket_state.gps_info.LNG
+      }
+    }
+
+    var data = {
+      responseData,
+      location: {
+        target: {
+          lat: lat,
+          lng: lng
+        }
+      },
+      markers: [
+        {
+          position: {
+            lat: lat,
+            lng: lng
+          },
+          label: "R",
+          key: "target"
+        }
+      ]
+    }
 
     ReactDOM.render(
       <TeamRocket data={data} />,
