@@ -23,7 +23,6 @@ var WeatherContainer = React.createClass({
       dataType: 'json',
       url: `weather?lat=${this.state.latValue}&lng=${this.state.lngValue}&APPID=dfcb3e37ff82ecb487b5c45648cdef5b`,
       success: function(data) {
-        console.log("callback");
         this.props.onWeatherDataSet(data);
       }.bind(this)
     });

@@ -42,11 +42,11 @@ setInterval(function() {
 
     if(responseData.rocket_state.gps_info) {
       if(responseData.rocket_state.gps_info.LAT != "Uninitialised") {
-        lat = responseData.rocket_state.gps_info.LAT
+        lat = parseFloat(responseData.rocket_state.gps_info.LAT);
       }
 
       if(responseData.rocket_state.gps_info.LNG != "Uninitialised") {
-        lng = responseData.rocket_state.gps_info.LNG
+        lng = parseFloat(responseData.rocket_state.gps_info.LNG);
       }
     }
 
