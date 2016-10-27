@@ -32,15 +32,15 @@ def data():
         "rocket_state": APP.rocket_state,
         'location': {
             'target': {
-                'lat': APP.rocket_state.gps_info.LAT,
-                'lng': APP.rocket_state.gps_info.LNG
+                'lat': 0,
+                'lng': 0
             }
         },
         'markers': [
           {
             'position': {
-                'lat': APP.rocket_state.gps_info.LAT,
-                'lng': APP.rocket_state.gps_info.LNG
+                'lat': 0,
+                'lng': 0
                 },
             'label': 'R',
             'key': 'target'
@@ -48,7 +48,7 @@ def data():
         ],
     }
 
-    print(data)
+    print(json.dumps(data))
 
     return json.dumps(data)
 
