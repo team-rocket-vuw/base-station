@@ -122,15 +122,11 @@ Function to be called when start initialisation command recieved. Checks state a
 responds accordingly
 */
 void tryStartInitialisation() {
-  if (state == gps_locking) {
-      sendMessage("start");
-      if (acknowledged()) {
-        messenger.sendCmd(rocket_command_response, "Initialisation started");
-        state = initialising;
-      }
-  } else {
-      messenger.sendCmd(rocket_command_response, "Rocket in incorrect state");
-  }
+    sendMessage("start");
+    if (acknowledged()) {
+      messenger.sendCmd(rocket_command_response, "Initialisation started");
+      state = initialising;
+    }
 }
 
 /*
@@ -138,15 +134,11 @@ Function to be called when skip GPS command recieved. Checks state and
 responds accordingly
 */
 void trySkipGPSLock() {
-  if (state == gps_locking) {
-      sendMessage("skip_gps");
-      if (acknowledged()) {
-        messenger.sendCmd(rocket_command_response, "GPS skipped");
-        state = ready;
-      }
-  } else {
-      messenger.sendCmd(rocket_command_response, "Rocket in incorrect state");
-  }
+    sendMessage("skip_gps");
+    if (acknowledged()) {
+      messenger.sendCmd(rocket_command_response, "GPS skipped");
+      state = ready;
+    }
 }
 
 /*
@@ -154,15 +146,11 @@ Function to be called when begin loop command recieved. Checks state and
 responds accordingly
 */
 void tryBeginLoop() {
-  if (state == ready) {
-      sendMessage("begin");
-      if (acknowledged()) {
-        messenger.sendCmd(rocket_command_response, "Main loop started");
-        state = running;
-      }
-  } else {
-      messenger.sendCmd(rocket_command_response, "Rocket in incorrect state");
-  }
+    sendMessage("begin");
+    if (acknowledged()) {
+      messenger.sendCmd(rocket_command_response, "Main loop started");
+      state = running;
+    }
 }
 
 
@@ -272,7 +260,7 @@ String getStateName(int componentState, boolean last) {
       break;
   }
 
-  return toReturn + (last ? "/," : "");
+  return toReturn + (!last ? "/," : "");
 }
 
 /*

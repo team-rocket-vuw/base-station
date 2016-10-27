@@ -47,5 +47,5 @@ class PyCmdMessenger(threading.Thread):
             if response is not None:
                 response_json = response[1][0]
                 self.server.rocket_state = response_json
-                time.sleep(0.1)
+                time.sleep(0.5)
 

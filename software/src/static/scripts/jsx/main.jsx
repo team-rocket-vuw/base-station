@@ -37,8 +37,8 @@ setInterval(function() {
   $.get("http://127.0.0.1:5000/data", function (response) {
     var responseData = JSON.parse(response);
 
-    var lat = 0;
-    var lng = 0;
+    var lat = -41.288;
+    var lng = 174.762;
 
     if(responseData.rocket_state.gps_info) {
       if(responseData.rocket_state.gps_info.LAT != "Uninitialised") {

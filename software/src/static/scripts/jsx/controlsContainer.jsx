@@ -38,15 +38,13 @@ var ControlsContainer = React.createClass({
   },
 
   render: function() {
+    var rocketState = this.props.data.responseData.rocket_state
     return(
       <div className="controls-container">
-        <p>{JSON.stringify(this.props.data.responseData.rocket_state)}</p>
+        <p>{rocketState.init_info.RFM}</p>
         <button className="control-button" onClick={() => this.sendCommand("start")}>Send Start Command</button>
-        <p>{this.state.startCommandResponse}</p>
         <button className="control-button" onClick={() => this.sendCommand("skip")}>Send Skip Command</button>
-        <p>{this.state.skipCommandResponse}</p>
         <button className="control-button" onClick={() => this.sendCommand("begin")}>Send Begin Command</button>
-        <p>{this.state.beginCommandResponse}</p>
       </div>
     );
   }
