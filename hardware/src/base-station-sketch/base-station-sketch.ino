@@ -228,7 +228,7 @@ void updateState() {
   info += "}/,";
 
   info += "'gps_info': {";
-  info += "'READY': '" + gps_state + "'/,";
+  info += "'STATE': '" + gps_state + "'/,";
   info += "'VIS': '" + gps_vis + "'/,";
   info += "'LAT': '" + gps_lat + "'/,";
   info += "'LNG': '" + gps_lng + "'";
