@@ -29,23 +29,7 @@ def index():
 @APP.route('/data')
 def data():
     data = {
-        "rocket_state": json.loads(APP.rocket_state.replace("'", "\"")),
-        "location": {
-            "target": {
-                "lat": 0,
-                "lng": 0
-            }
-        },
-        "markers": [
-          {
-            "position": {
-                "lat": 0,
-                "lng": 0
-                },
-            "label": "R",
-            "key": "target"
-          }
-        ],
+        "rocket_state": json.loads(APP.rocket_state.replace("'", "\""))
     }
 
     return json.dumps(data)
