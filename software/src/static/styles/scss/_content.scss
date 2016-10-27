@@ -8,8 +8,56 @@
     position: absolute;
     top: 0;
 
-    p {
+    span {
       margin: 0;
+    }
+
+    .rfm-state {
+      clear: both;
+    }
+
+    .loaded {
+      color: #27ae60;
+      margin-right: 5px;
+      width: $base-line-height;
+      height: $base-line-height;
+      display: inline-block;
+    }
+
+    .fail {
+      color: #e74c3c;
+      margin-right: 5px;
+      width: $base-line-height;
+      height: $base-line-height;
+      display: inline-block;
+    }
+
+    .waiting {
+      color: #e67e22;
+      margin-right: 5px;
+      width: $base-line-height;
+      height: $base-line-height;
+      display: inline-block;
+    }
+
+    .loading {
+      display: inline-block;
+      margin-right: 5px;
+      border-radius: 50%;
+      width: $base-line-height;
+      height: $base-line-height;
+      border: .25rem solid $off-black;
+      border-top-color: $black;
+      animation: spin $spin-duration infinite linear;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
     }
   }
 
