@@ -11,7 +11,7 @@ require('../../styles/scss/style.scss');
 var TeamRocket = React.createClass({
   getInitialState: function() {
     return {
-      selectedSection: 'status'
+      selectedSection: 'launchOps'
     };
   },
 
@@ -35,7 +35,40 @@ var refreshTime = 100;
 
 setInterval(function() {
   $.get("http://127.0.0.1:5000/data", function (response) {
-    var data = JSON.parse(response);
+    var responseData = JSON.parse(response);
+
+    var lat = -41.288;
+    var lng = 174.762;
+
+    if(responseData.rocket_state.gps_info) {
+      if(responseData.rocket_state.gps_info.LAT != "Uninitialised") {
+        lat = parseFloat(responseData.rocket_state.gps_info.LAT);
+      }
+
+      if(responseData.rocket_state.gps_info.LNG != "Uninitialised") {
+        lng = parseFloat(responseData.rocket_state.gps_info.LNG);
+      }
+    }
+
+    var data = {
+      responseData,
+      location: {
+        target: {
+          lat: lat,
+          lng: lng
+        }
+      },
+      markers: [
+        {
+          position: {
+            lat: lat,
+            lng: lng
+          },
+          label: "R",
+          key: "target"
+        }
+      ]
+    }
 
     ReactDOM.render(
       <TeamRocket data={data} />,

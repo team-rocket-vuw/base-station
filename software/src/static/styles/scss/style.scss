@@ -1,7 +1,6 @@
 @import "variables";
 @import "sidebar";
 @import "content";
-@import "location";
 @import "map";
 @import "simulations";
 
@@ -13,6 +12,7 @@ html {
   font-family: sans-serif;
 
   body {
+    background-color: $cloud-white;
     margin: 0;
     padding: 0;
     width: 100%;
@@ -27,6 +27,10 @@ html {
         min-height: 100vh;
         display: flex;
         flex: 1;
+
+        .no-bottom-margin {
+          margin-bottom: 0;
+        }
       }
     }
   }
