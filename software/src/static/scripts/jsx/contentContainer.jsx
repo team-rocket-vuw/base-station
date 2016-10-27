@@ -27,12 +27,12 @@ var ContentContainer = React.createClass({
         <ControlsContainer data={this.props.data} />
         <div className="launch-data-container">
           <div className="location-data">
-            <h3>Rocket</h3>
+            <h3 className="no-bottom-margin">Rocket Coordinates</h3>
             <ul className="location-data-list">
               <li>lat: {this.props.data.location.target.lat}</li>
               <li>long: {this.props.data.location.target.lng}</li>
             </ul>
-            <h3>Current</h3>
+            <h3 className="no-bottom-margin">Base Station Coordinates</h3>
             <ul className="location-data-list">
               <li>lat: {currentLat}</li>
               <li>long: {currentLng}</li>

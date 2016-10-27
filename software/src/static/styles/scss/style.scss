@@ -27,6 +27,10 @@ html {
         min-height: 100vh;
         display: flex;
         flex: 1;
+
+        .no-bottom-margin {
+          margin-bottom: 0;
+        }
       }
     }
   }

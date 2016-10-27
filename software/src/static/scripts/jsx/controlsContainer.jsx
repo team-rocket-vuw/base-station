@@ -87,8 +87,20 @@ var ControlsContainer = React.createClass({
       break;
     }
 
+
+    var skipButton = <span hidden></span>
+    if (rocketState.gps_info.STATE == "locking") {
+      skipButton = <button className="control-button" onClick={() => this.sendCommand("skip")}>Send Skip Command</button>;
+    }
+
+    var beginButton = <span hidden></span>
+    if (rocketState.gps_info.STATE == "ready" || rocketState.gps_info.STATE == "skipped") {
+      beginButton = <button className="control-button" onClick={() => this.sendCommand("begin")}>Send Begin Command</button>;
+    }
+
     return(
       <div className="state-display">
+        <button className="control-button" onClick={() => this.sendCommand("start")}>Send Start Command</button>
         <h3>Rocket Initialisation Info</h3>
         <div>
           <div className={rfmStateClass}>{rfmStateContent}</div><span className="rfm-state">Radio Module: {rocketState.init_info.RFM}</span>
@@ -97,34 +109,19 @@ var ControlsContainer = React.createClass({
           <div className={dmStateClass}>{dmStateContent}</div><span>Data Module: {rocketState.init_info.DM}</span>
         </div>
 
-        <h3>GPS State</h3>
-        <div className={gpsStateClass} /><span>Status: {rocketState.gps_info.STATE}</span>
-        <div>Visible Satellites: {parseInt(rocketState.gps_info.VIS)}</div>
+        <h3 className="gps-state-title">GPS State</h3>
+        <div className={gpsStateClass}>{gpsStateContent}</div><span>Status: {rocketState.gps_info.STATE}</span>
+        <div>Visible Satellites: {rocketState.gps_info.VIS}</div>
+        {skipButton}
+        {beginButton}
       </div>
     );
-  },
-
-  renderButtons: function() {
-    var buttons = [];
-
-    if (this.state.displaySkipButton) {
-      buttons.push(<button className="control-button" onClick={() => this.sendCommand("start")}>Send Start Command</button>);
-    }
-    if (this.state.displaySkipButton) {
-      buttons.push(<button className="control-button" onClick={() => this.sendCommand("skip")}>Send Skip Command</button>);
-    }
-    if (this.state.displaySkipButton) {
-      buttons.push(<button className="control-button" onClick={() => this.sendCommand("begin")}>Send Begin Command</button>);
-    }
-
-    return buttons;
   },
 
   render: function() {
     return(
       <div className="controls-container">
         {this.renderStateDisplay()}
-        {this.renderButtons()}
       </div>
     );
   }

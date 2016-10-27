@@ -8,12 +8,22 @@
     position: absolute;
     top: 0;
 
+    .location-data-list {
+      margin-top: 5px;
+      padding-left: 20px;
+      list-style: none;
+    }
+
     span {
       margin: 0;
     }
 
     .rfm-state {
       clear: both;
+    }
+
+    .gps-state-title {
+      margin-bottom: 0;
     }
 
     .loaded {
@@ -33,6 +43,9 @@
     }
 
     .waiting {
+      font-size: 40px;
+      position: relative;
+      top: 8px;
       color: #e67e22;
       margin-right: 5px;
       width: $base-line-height;
