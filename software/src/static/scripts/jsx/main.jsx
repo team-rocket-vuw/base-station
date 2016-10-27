@@ -40,12 +40,14 @@ setInterval(function() {
     var lat = 0;
     var lng = 0;
 
-    if(responseData.rocket_state.gps_info.LAT != "Uninitialised") {
-      lat = responseData.rocket_state.gps_info.LAT
-    }
+    if(responseData.rocket_state.gps_info) {
+      if(responseData.rocket_state.gps_info.LAT != "Uninitialised") {
+        lat = responseData.rocket_state.gps_info.LAT
+      }
 
-    if(responseData.rocket_state.gps_info.LNG != "Uninitialised") {
-      lng = responseData.rocket_state.gps_info.LNG
+      if(responseData.rocket_state.gps_info.LNG != "Uninitialised") {
+        lng = responseData.rocket_state.gps_info.LNG
+      }
     }
 
     var data = {
